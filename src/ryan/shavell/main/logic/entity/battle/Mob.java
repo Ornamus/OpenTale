@@ -82,5 +82,7 @@ public abstract class Mob {
 
     public abstract BufferedImage getHitImage();
 
+    public abstract void setImage(BufferedImage image);
+
     public abstract String getMusic();
 }

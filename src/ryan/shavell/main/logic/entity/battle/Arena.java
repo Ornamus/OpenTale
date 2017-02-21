@@ -28,14 +28,9 @@ public class Arena implements InputTaker, Drawable {
 
     private BufferedImage hp;
 
-    private DialogBox dialogBox;
+    private static DialogBox dialogBox;
 
-    //private ScrollText primaryText;
-
-    private Mob mob;
-
-    private int battleBox_height = 0;
-    private int battleBox_width = 0;
+    private static Mob mob;
 
     private final Point fightPoint = new Point(33, 433);
     private final Point actPoint = new Point(186, 433);
@@ -65,24 +60,23 @@ public class Arena implements InputTaker, Drawable {
     }
 
     public void optionSelect(int option, int whichSubMenu) {
-        //TODO: remove this after implementing properly
-        /*
-        dialogBox.setText("Selected option " + option + " \"" + dialogBox.getOptions()[option] + "\" in menu " + whichSubMenu + ".", true);
-        subMenu = -1;
-        selected = -1;
-        */
-
-        if (subMenu == 0) { //FIGHT
+        if (whichSubMenu == 0) { //FIGHT
             //TODO: make the fight box GUI thing appear
-        } else if (subMenu == 1) {//ACT
+        } else if (whichSubMenu == 1) {//ACT
             mobHandlingDialog = true;
-            mobProvidedActions = mob.onACT(dialogBox.getOptions()[option]);
-            System.out.println("Got " + mobProvidedActions.size() + " actions");
+            String optionString = dialogBox.getOptions()[option];
+            if (optionString.equalsIgnoreCase("Check")) {
+                mobProvidedActions.clear();
+                mobProvidedActions.add(new ActionTalk(mob.getCheckInfo()));
+            } else {
+                mobProvidedActions = mob.onACT(optionString);
+                //System.out.println("Got " + mobProvidedActions.size() + " actions");
+            }
             subMenu = -1;
             selected = -1;
-        } else if (subMenu == 2) { //ITEM
+        } else if (whichSubMenu == 2) { //ITEM
             //TODO: pull item info from item info class/list
-        } else if (subMenu == 3) { //MERCY
+        } else if (whichSubMenu == 3) { //MERCY
             if (option == 0) { //Spare
                 //TODO: spare
             } else { //Flee
@@ -149,7 +143,13 @@ public class Arena implements InputTaker, Drawable {
             if (subMenu == 0) {
                 options = new String[]{mob.getName()};
             } else if (subMenu == 1) {
-                options = mob.getACT();
+                options = new String[mob.getACT().length + 1];
+                options[0] = "Check";
+                int index = 1;
+                for (String s : mob.getACT()) {
+                    options[index] = s;
+                    index++;
+                }
             } else if (subMenu == 2) {
                 options = new String[]{"CrustyPotato", "Carrot", "Fineapple"};
             } else if (subMenu == 3) {
@@ -166,20 +166,16 @@ public class Arena implements InputTaker, Drawable {
         }
         //TODO: make this line not a clustertruck
         if (subMenu == -1 && /*dialogBox.shouldBlockInput() &&*/ mobHandlingDialog && mobProvidedActions.size() > 0) {
-            //TODO: scroll to next dialog piece, provided by mob most of the time?
             DialogAction current = mobProvidedActions.get(0);
-            if (current instanceof ActionTalk) {
-                //System.out.println("PROCESSING ACTION");
-                if (!current.hasRun()) {
-                    current.run(dialogBox);
-                    System.out.println("Ran action");
-                }
-                if (current.isDone(dialogBox)) {
-                    System.out.println("Action complete");
-                    mobProvidedActions.remove(current);
-                }
+            //System.out.println("PROCESSING ACTION");
+            if (!current.hasRun()) {
+                current.run();
+                System.out.println("Ran action");
             }
-            //dialogBox.setText("* ASRIEL attacks you.", true);
+            if (current.isDone()) {
+                System.out.println("Action complete");
+                mobProvidedActions.remove(current);
+            }
         }
         dialogBox.tick();
     }
@@ -258,16 +254,16 @@ public class Arena implements InputTaker, Drawable {
         g.setColor(Color.WHITE);
         g.setFont(Main.SQUISH_MENU);
 
-        //TODO: all of this is roughly correct, but perfect it and do it right
+        //TODO: all of this is roughly correct, but perfect it
 
         Point stats = new Point(33, 420);
-        g.drawString("RYAN  LV 1", stats.x, stats.y); //TODO: pull name and level variables from player info once that exists
+        g.drawString("SHIFTY  LV 1", stats.x, stats.y); //TODO: pull name and level variables from player info once that exists
 
         g.setColor(Color.YELLOW);
         Rectangle rect = new Rectangle(actPoint.x + 90, stats.y - 18, 25, 21);
         g.fillRect(rect.x, rect.y, rect.width, rect.height);
 
-        g.drawImage(hp, rect.x - 31, rect.y + 5, null); //TODO: tune perfectly (268, 408)
+        g.drawImage(hp, rect.x - 31, rect.y + 5, null); //TODO: tune perfectly (268, 408) (might be perfect now)
 
         g.setColor(Color.WHITE);
         g.drawString("20 / 20", rect.x + rect.width + 14, stats.y);
@@ -292,5 +288,13 @@ public class Arena implements InputTaker, Drawable {
     @Override
     public boolean shouldDoubleSize() {
         return false;
+    }
+
+    public static DialogBox getDialogBox() {
+        return dialogBox;
+    }
+
+    public static Mob getMob() {
+        return mob;
     }
 }

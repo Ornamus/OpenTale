@@ -1,5 +1,6 @@
 package ryan.shavell.main.logic.entity.battle;
 
+import ryan.shavell.main.dialogue.actions.ActionImageChange;
 import ryan.shavell.main.dialogue.actions.ActionTalk;
 import ryan.shavell.main.dialogue.actions.DialogAction;
 import ryan.shavell.main.resources.SpriteSheet;
@@ -26,8 +27,10 @@ public class TestMob extends Mob {
         System.out.println("ASRIEL was acted on with \"" + option + "\"!");
         List<DialogAction> actions = new ArrayList<>();
         if (option.equals("Insult")) {
+            actions.add(new ActionImageChange(sheet.getImage(1, 0)));
             actions.add(new ActionTalk("Wha...really?"));
             actions.add(new ActionTalk("Wow, I guess you really ARE a jerk!"));
+            actions.add(new ActionImageChange(sheet.getImage(0, 0)));
             actions.add(new ActionTalk("Well, I guess it's time for you to die now."));
         }
         return actions;
@@ -41,6 +44,11 @@ public class TestMob extends Mob {
     @Override
     public String getCheckInfo() {
         return super.getCheckInfo() + "/n* Puts on a brave face, but gets emotional very easily.";
+    }
+
+    @Override
+    public void setImage(BufferedImage i) {
+        current = i;
     }
 
     @Override

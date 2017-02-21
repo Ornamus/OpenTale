@@ -27,7 +27,8 @@ public class DialogBox implements Drawable, InputTaker {
 
     private boolean isOptions, blocking, skippable, shouldMoveOn;
 
-    //TODO: some sort of "lock movement" criteria that would let Arena know not to allow menu movement while this spells text
+    //TODO: more getters and setters, so that further implementations (like ChatBox) can actually work
+
     //TODO: tune a little better? (maybe not)
     public DialogBox(int y) {
         this.y = y;
@@ -192,14 +193,18 @@ public class DialogBox implements Drawable, InputTaker {
         optionFour.tick();
     }
 
-    @Override
-    public void draw(Graphics2D g) {
+    public void drawBackground(Graphics2D g) {
         g.setColor(Color.BLACK);
         g.fillRect(x, y, dialogWidth, dialogHeight);
         for (int i = 0; i < 5; i++) {
             g.setColor(Color.WHITE);
             g.drawRect(x + i, y + i, dialogWidth - (i * 2), dialogHeight - (i * 2));
         }
+    }
+
+    @Override
+    public void draw(Graphics2D g) {
+        drawBackground(g);
         text.draw(g);
         optionOne.draw(g);
         optionTwo.draw(g);
