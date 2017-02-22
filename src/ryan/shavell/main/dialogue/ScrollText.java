@@ -3,8 +3,10 @@ package ryan.shavell.main.dialogue;
 import ryan.shavell.main.core.Main;
 import ryan.shavell.main.render.Drawable;
 import ryan.shavell.main.resources.AudioHandler;
+import sun.rmi.runtime.Log;
 
 import java.awt.*;
+import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -169,10 +171,13 @@ public class ScrollText implements Drawable {
         }
         //Render
         g.setColor(color);
-        if (speed == SCROLL_INSTANT || currentCharacter == -1) {
+
+        Rectangle2D rect = g.getFontMetrics().getStringBounds("boop", g);
+        int offset = (int) Math.round(rect.getHeight()) + 7;
+        if (speed == SCROLL_INSTANT || currentCharacter == -1 || text.equals("")) {
             int index = 0;
             for (String s : breaks) {
-                g.drawString(s, x, y + (index * 34));
+                g.drawString(s, x, y + (index * offset));
                 index++;
             }
         } else {
@@ -184,12 +189,12 @@ public class ScrollText implements Drawable {
                 //TODO: tune line spacing and handle properly
 
                 if (currentCharacter >= sumLength) {
-                    g.drawString(s, x, y + (index * 34));
+                    g.drawString(s, x, y + (index * offset));
                     //System.out.println("perfect");
                 } else if (currentCharacter > (sumLength - s.length())) {
                     //System.out.println("inbetween");
 
-                    g.drawString(s.substring(0, currentCharacter - (sumLength - s.length())), x, y + (index * 34));
+                    g.drawString(s.substring(0, currentCharacter - (sumLength - s.length())), x, y + (index * offset));
                 }
                 index++;
             }

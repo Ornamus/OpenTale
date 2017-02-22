@@ -1,6 +1,8 @@
 package ryan.shavell.main.logic.entity.battle;
 
 import ryan.shavell.main.core.Main;
+import ryan.shavell.main.dialogue.ChatBox;
+import ryan.shavell.main.dialogue.actions.ActionDialog;
 import ryan.shavell.main.dialogue.actions.ActionTalk;
 import ryan.shavell.main.dialogue.actions.DialogAction;
 import ryan.shavell.main.logic.InputTaker;
@@ -29,6 +31,7 @@ public class Arena implements InputTaker, Drawable {
     private BufferedImage hp;
 
     private static DialogBox dialogBox;
+    private static ChatBox chatBubble;
 
     private static Mob mob;
 
@@ -41,9 +44,8 @@ public class Arena implements InputTaker, Drawable {
     private int subMenu = -1;
 
     private boolean playerTurn = true;
-    private boolean mobHandlingDialog = false;
 
-    private List<DialogAction> mobProvidedActions = new ArrayList<>();
+    private List<DialogAction> actions = new ArrayList<>();
 
     private String[] oldOptions = null;
 
@@ -53,6 +55,9 @@ public class Arena implements InputTaker, Drawable {
         soulType = SoulType.NORMAL;
 
         dialogBox = new DialogBox(251);
+        chatBubble = new ChatBox(80);
+
+        //chatBubble.setText("Jaximus, you are LITERALLY aids incarnate.");
 
         hp = ImageLoader.getImage("hp");
 
@@ -63,14 +68,14 @@ public class Arena implements InputTaker, Drawable {
         if (whichSubMenu == 0) { //FIGHT
             //TODO: make the fight box GUI thing appear
         } else if (whichSubMenu == 1) {//ACT
-            mobHandlingDialog = true;
             String optionString = dialogBox.getOptions()[option];
             if (optionString.equalsIgnoreCase("Check")) {
-                mobProvidedActions.clear();
-                mobProvidedActions.add(new ActionTalk(mob.getCheckInfo()));
+                actions.clear();
+                actions.add(new ActionDialog(mob.getCheckInfo()));
             } else {
-                mobProvidedActions = mob.onACT(optionString);
-                //System.out.println("Got " + mobProvidedActions.size() + " actions");
+                actions = mob.onACT(optionString);
+                dialogBox.setText("");
+                //System.out.println("Got " + actions.size() + " actions");
             }
             subMenu = -1;
             selected = -1;
@@ -119,13 +124,18 @@ public class Arena implements InputTaker, Drawable {
                 dialogBox.setText(dialogBox.getLastText());
             }
         }
-        if (selected != oldSelected) {
-            AudioHandler.playEffect("menu_scroll");
+        if (actions.isEmpty()) {
+            if (selected != oldSelected) {
+                AudioHandler.playEffect("menu_scroll");
+            }
+        } else {
+            selected = -1;
         }
 
         if (subMenu == oldSubMenu) {
             dialogBox.onKeyPress(e);
         }
+        chatBubble.onKeyPress(e);
     }
 
     @Override
@@ -165,8 +175,8 @@ public class Arena implements InputTaker, Drawable {
             }
         }
         //TODO: make this line not a clustertruck
-        if (subMenu == -1 && /*dialogBox.shouldBlockInput() &&*/ mobHandlingDialog && mobProvidedActions.size() > 0) {
-            DialogAction current = mobProvidedActions.get(0);
+        if (subMenu == -1 &&  actions.size() > 0) {
+            DialogAction current = actions.get(0);
             //System.out.println("PROCESSING ACTION");
             if (!current.hasRun()) {
                 current.run();
@@ -174,10 +184,11 @@ public class Arena implements InputTaker, Drawable {
             }
             if (current.isDone()) {
                 System.out.println("Action complete");
-                mobProvidedActions.remove(current);
+                actions.remove(current);
             }
         }
         dialogBox.tick();
+        chatBubble.tick();
     }
 
     String mobMusic = null;
@@ -217,6 +228,8 @@ public class Arena implements InputTaker, Drawable {
         drawPlayerInfo(g);
 
         dialogBox.draw(g);
+
+        chatBubble.draw(g);
 
         //TODO: move health bar code to either DialogBox or a correct spot here
         /*
@@ -292,6 +305,10 @@ public class Arena implements InputTaker, Drawable {
 
     public static DialogBox getDialogBox() {
         return dialogBox;
+    }
+
+    public static ChatBox getChatBubble() {
+        return chatBubble;
     }
 
     public static Mob getMob() {

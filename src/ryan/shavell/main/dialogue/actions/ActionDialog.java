@@ -1,16 +1,15 @@
 package ryan.shavell.main.dialogue.actions;
 
-import ryan.shavell.main.dialogue.ChatBox;
 import ryan.shavell.main.dialogue.DialogBox;
 import ryan.shavell.main.logic.entity.battle.Arena;
 
-public class ActionTalk extends DialogAction {
+public class ActionDialog extends DialogAction {
 
-    public ActionTalk(String text) {
+    public ActionDialog(String text) {
         super(()-> {
-            Arena.getChatBubble().setText(text, true);
+            Arena.getDialogBox().setText(text, true);
         }, ()-> {
-            ChatBox box = Arena.getChatBubble();
+            DialogBox box = Arena.getDialogBox();
             boolean done = !box.isScrolling() && box.shouldMoveOn();
             if (done) {
                 box.setText("");

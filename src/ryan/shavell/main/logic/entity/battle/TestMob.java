@@ -1,8 +1,10 @@
 package ryan.shavell.main.logic.entity.battle;
 
+import ryan.shavell.main.dialogue.actions.ActionDialog;
 import ryan.shavell.main.dialogue.actions.ActionImageChange;
 import ryan.shavell.main.dialogue.actions.ActionTalk;
 import ryan.shavell.main.dialogue.actions.DialogAction;
+import ryan.shavell.main.resources.Animation;
 import ryan.shavell.main.resources.SpriteSheet;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
@@ -13,9 +15,11 @@ public class TestMob extends Mob {
     private SpriteSheet sheet;
     private BufferedImage current;
 
+    private Animation talk1, talk2, talk3, talk4, talk5;
+
     public TestMob() {
         super(100);
-        sheet = new SpriteSheet(35, 71, 2, 1, "asriel_battle_temp");
+        sheet = new SpriteSheet(35, 71, 6, 2, "asriel_battle_temp");
         current = sheet.getImage(0, 0);
         setName("Asriel");
         setMaxHealth(10);
@@ -26,12 +30,20 @@ public class TestMob extends Mob {
     public List<DialogAction> onACT(String option) {
         System.out.println("ASRIEL was acted on with \"" + option + "\"!");
         List<DialogAction> actions = new ArrayList<>();
-        if (option.equals("Insult")) {
+        if (option.equals("Flirt")) {
+            actions.add(new ActionDialog("* You flirt with ASRIEL."));
             actions.add(new ActionImageChange(sheet.getImage(1, 0)));
+            actions.add(new ActionTalk("Wha-what?"));
+            actions.add(new ActionTalk("..."));
+            actions.add(new ActionTalk("What are you doing?"));
+            actions.add(new ActionDialog("* Are you really flirting with a 10 year-old goat?"));
+
+            /*
             actions.add(new ActionTalk("Wha...really?"));
             actions.add(new ActionTalk("Wow, I guess you really ARE a jerk!"));
             actions.add(new ActionImageChange(sheet.getImage(0, 0)));
             actions.add(new ActionTalk("Well, I guess it's time for you to die now."));
+            */
         }
         return actions;
     }

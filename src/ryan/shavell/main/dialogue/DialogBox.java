@@ -10,7 +10,7 @@ import java.awt.event.KeyEvent;
 
 public class DialogBox implements Drawable, InputTaker {
 
-    private static final int x = 33;
+    //private static final int x = 33;
     private static final int dialogWidth = 575, dialogHeight = 140;
 
     private Point primaryTextPoint, optionOnePoint, optionTwoPoint, optionThreePoint, optionFourPoint;
@@ -20,7 +20,7 @@ public class DialogBox implements Drawable, InputTaker {
     private int optionSelected = -1;
     private int forSureOptionSelected = -1;
 
-    private int y;
+    private int x, y;
     private ScrollText text;
 
     private String lastText = null;
@@ -29,14 +29,22 @@ public class DialogBox implements Drawable, InputTaker {
 
     //TODO: more getters and setters, so that further implementations (like ChatBox) can actually work
 
-    //TODO: tune a little better? (maybe not)
     public DialogBox(int y) {
+        this(33, y);
+    }
+
+    public DialogBox(int x, int y) {
+        this(x, y, x + 22, y + 40);
+    }
+
+    //TODO: when to use DIALOGUE vs MENU
+    public DialogBox(int x, int y, int textX, int textY) {
+        this.x = x;
         this.y = y;
 
-        primaryTextPoint = new Point(x + 22, y + 40);
+        primaryTextPoint = new Point(textX, textY);
 
         text = new ScrollText(primaryTextPoint.x, primaryTextPoint.y);
-        text.setVisuals(Color.WHITE, Main.DIALOGUE);
         text.setWidthLimit(dialogWidth - x);
 
         optionOnePoint = new Point(primaryTextPoint.x + 30, primaryTextPoint.y);
@@ -49,10 +57,22 @@ public class DialogBox implements Drawable, InputTaker {
         optionThree = new ScrollText(optionThreePoint.x, optionThreePoint.y);
         optionFour = new ScrollText(optionFourPoint.x, optionFourPoint.y);
 
+        text.setVisuals(Color.WHITE, Main.DIALOGUE);
+
         optionOne.setVisuals(Color.WHITE, Main.MENU);
         optionTwo.setVisuals(Color.WHITE, Main.MENU);
         optionThree.setVisuals(Color.WHITE, Main.MENU);
         optionFour.setVisuals(Color.WHITE, Main.MENU);
+
+        //setVisuals(Color.WHITE, Main.DIALOGUE);
+    }
+
+    public void setVisuals(Color c, Font f) {
+        text.setVisuals(c, f);
+        optionOne.setVisuals(c, f);
+        optionTwo.setVisuals(c, f);
+        optionThree.setVisuals(c, f);
+        optionFour.setVisuals(c, f);
     }
 
     private void setDefaults() {
@@ -107,6 +127,10 @@ public class DialogBox implements Drawable, InputTaker {
         } else {
             return text.getText();
         }
+    }
+
+    public void setTextWidthLimit(int limit) {
+        text.setWidthLimit(limit);
     }
 
     public String getLastText() {
@@ -227,5 +251,13 @@ public class DialogBox implements Drawable, InputTaker {
     @Override
     public boolean shouldDoubleSize() {
         return false;
+    }
+
+    public int getX() {
+        return x;
+    }
+
+    public int getY() {
+        return y;
     }
 }
