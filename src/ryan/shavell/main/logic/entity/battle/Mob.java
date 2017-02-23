@@ -13,6 +13,8 @@ public abstract class Mob {
     private int maxHealth = 10, currentHealth = 10, attack = 0, defense = 0;
     private String name = null;
 
+    private boolean boss = false;
+
     public Mob(int y) {
         this.y = y;
     }
@@ -38,8 +40,17 @@ public abstract class Mob {
         return this;
     }
 
+    public Mob setBoss(boolean boss) {
+        this.boss = boss;
+        return this;
+    }
+
     public String getCheckInfo() {
         return "* " + name.toUpperCase() +  " " + getAttack() + " ATK " + getDefense() + " DEF";
+    }
+
+    public void setCurrentHealth(int h) {
+        this.currentHealth = h;
     }
 
     public String getName() {
@@ -48,10 +59,6 @@ public abstract class Mob {
 
     public int getMaxHealth() {
         return maxHealth;
-    }
-
-    public void setCurrentHealth(int h) {
-        this.currentHealth = h;
     }
 
     public int getCurrentHealth() {
@@ -66,12 +73,20 @@ public abstract class Mob {
         return defense;
     }
 
+    public int getY() {
+        return y;
+    }
+
     public boolean shouldDoubleSize() {
         return true;
     }
 
-    public int getY() {
-        return y;
+    public boolean isBoss() {
+        return boss;
+    }
+
+    public double getHealthPercent() {
+        return (getCurrentHealth() * 1.0) / (getMaxHealth() * 1.0);
     }
 
     public abstract List<DialogAction> onACT(String option);

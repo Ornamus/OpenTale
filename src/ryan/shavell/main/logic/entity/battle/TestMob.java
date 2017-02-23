@@ -22,7 +22,7 @@ public class TestMob extends Mob {
         sheet = new SpriteSheet(35, 71, 6, 2, "asriel_battle_temp");
         current = sheet.getImage(0, 0);
         setName("Asriel");
-        setMaxHealth(10);
+        setMaxHealth(200);
         setAttack(3);
     }
 
@@ -37,13 +37,6 @@ public class TestMob extends Mob {
             actions.add(new ActionTalk("..."));
             actions.add(new ActionTalk("What are you doing?"));
             actions.add(new ActionDialog("* Are you really flirting with a 10 year-old goat?"));
-
-            /*
-            actions.add(new ActionTalk("Wha...really?"));
-            actions.add(new ActionTalk("Wow, I guess you really ARE a jerk!"));
-            actions.add(new ActionImageChange(sheet.getImage(0, 0)));
-            actions.add(new ActionTalk("Well, I guess it's time for you to die now."));
-            */
         }
         return actions;
     }

@@ -10,6 +10,8 @@ import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
 import java.util.List;
 
+//TODO: make characters like commas slightly delay scrolling, causing a more fluid feeling scroll (makes the sound effects sound better too)
+
 public class ScrollText implements Drawable {
 
     public static final int SCROLL_INSTANT = -1;
@@ -94,7 +96,6 @@ public class ScrollText implements Drawable {
         }
     }
 
-    //TODO: Don't indent breaks if there isn't a *.
     //TODO: Make double spacing not push text past widthLimit
     private int oldWidthLimit = widthLimit;
     private Font oldFont = font;

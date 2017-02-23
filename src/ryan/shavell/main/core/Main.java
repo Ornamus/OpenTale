@@ -10,15 +10,15 @@ public class Main extends JFrame {
     private Board board;
     private Input input;
 
-    public static Font MENU, DIALOGUE, SQUISH_MENU, BATTLE_DIALOG;
+    public static Font MENU, DIALOGUE, SQUISH_MENU, BATTLE_DIALOG, BATTLE_NUMBERS;
 
     public Main() {
         try {
-            //Sans is menus, Mono is dialogue
-            DIALOGUE = Font.createFont(Font.TRUETYPE_FONT, this.getClass().getResourceAsStream("DTM-Mono.otf")).deriveFont(Font.PLAIN, 27);
-            MENU = Font.createFont(Font.TRUETYPE_FONT, this.getClass().getResourceAsStream("DTM-Sans.otf")).deriveFont(Font.PLAIN, 27);
-            SQUISH_MENU = Font.createFont(Font.TRUETYPE_FONT, this.getClass().getResourceAsStream("Mars.ttf")).deriveFont(Font.PLAIN, 24); //TODO: almost perfect 52
+            DIALOGUE = Font.createFont(Font.TRUETYPE_FONT, getClass().getResourceAsStream("DTM-Mono.otf")).deriveFont(Font.PLAIN, 27);
+            MENU = Font.createFont(Font.TRUETYPE_FONT, getClass().getResourceAsStream("DTM-Sans.otf")).deriveFont(Font.PLAIN, 27);
+            SQUISH_MENU = Font.createFont(Font.TRUETYPE_FONT, getClass().getResourceAsStream("Mars.ttf")).deriveFont(Font.PLAIN, 24); //TODO: almost perfect 52
             BATTLE_DIALOG = DIALOGUE.deriveFont(Font.PLAIN, 16);
+            BATTLE_NUMBERS = Font.createFont(Font.TRUETYPE_FONT, getClass().getResourceAsStream("hachicro.ttf")).deriveFont(Font.PLAIN, 30); //TODO: a little small, spacing is off either way though
         } catch (Exception e) {
             e.printStackTrace();
         }
