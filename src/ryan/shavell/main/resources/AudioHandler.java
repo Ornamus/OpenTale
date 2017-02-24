@@ -22,21 +22,17 @@ public class AudioHandler implements Runnable, LineListener {
 
     @Override
     public void run() {
-        try {
-            AudioInputStream audioStream = AudioSystem.getAudioInputStream(getClass().getResourceAsStream(audioFileName + ".wav"));
+        boolean didAtAll = false;
+        while (loop || !didAtAll) {
+            try {
+                AudioInputStream audioStream = AudioSystem.getAudioInputStream(AudioHandler.class.getResource(audioFileName + ".wav"));
+                AudioFormat format = audioStream.getFormat();
 
-            AudioFormat format = audioStream.getFormat();
+                DataLine.Info info = new DataLine.Info(Clip.class, format);
 
-            DataLine.Info info = new DataLine.Info(Clip.class, format);
+                //TODO: lower music more than other game audio
 
-            //TODO: lower music more than other game audio
-
-
-            //TODO: looping not working?
-            boolean didAtAll = false;
-            while (loop || !didAtAll) {
                 Clip audioClip = (Clip) AudioSystem.getLine(info);
-
 
                 audioClip.addLineListener(this);
 
@@ -60,11 +56,12 @@ public class AudioHandler implements Runnable, LineListener {
 
                 audioClip.close();
                 didAtAll = true;
-            }
 
-        } catch (Exception ex) {
-            System.out.println("[ERROR] AudioHandler exception!");
-            ex.printStackTrace();
+
+            } catch (Exception ex) {
+                System.out.println("[ERROR] AudioHandler exception!");
+                ex.printStackTrace();
+            }
         }
     }
 

@@ -22,6 +22,8 @@ public class ScrollText implements Drawable {
     private String text = "";
     private int x, y;
 
+    private String typeSound = "generic_text";
+
     private int speed = SCROLL_NORMAL;
     private int widthLimit = -1;
     private Color color = Color.WHITE;
@@ -53,6 +55,10 @@ public class ScrollText implements Drawable {
     public void setVisuals(Color c, Font f) {
         color = c;
         font = f;
+    }
+
+    public void setSound(String sound) {
+        typeSound = sound;
     }
 
     public void forceEndScroll() {
@@ -201,7 +207,7 @@ public class ScrollText implements Drawable {
             }
 
             if (waitedTicks == 0 && text.charAt(currentCharacter) != ' ') {
-                AudioHandler.playEffect("generic_text");
+                AudioHandler.playEffect(typeSound);
             }
         }
     }

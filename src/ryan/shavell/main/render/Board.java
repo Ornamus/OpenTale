@@ -2,6 +2,7 @@ package ryan.shavell.main.render;
 
 import ryan.shavell.main.dialogue.DialogBox;
 import ryan.shavell.main.logic.entity.battle.Arena;
+import ryan.shavell.main.logic.entity.battle.StoryshiftAsriel;
 import ryan.shavell.main.logic.entity.battle.TestMob;
 
 import javax.swing.*;
@@ -20,26 +21,25 @@ public class Board extends JPanel implements ActionListener {
 
     public static Board self = null;
 
-    private DialogBox box;
-
+    long start;
     public Board() {
+        self = this;
         /*
         drawables.add(new BasicRenderedThing(0, 0, "home"));
         drawables.add(new OverworldEntity(100, 100, "sans_temp"));
         drawables.add(new OverworldPlayer(200, 200));
         */
-        drawables.add(new Arena(new TestMob()));
-        box = new DialogBox(251);
-        //drawables.add(box);
-        box.setText("* I'm a little teapot short and stout, here is my handle, here is my spout");
+        //drawables.add(new Arena(new StoryshiftAsriel()));
         t = new Timer(25, this);
         t.start();
-
-        self = this;
+        start = System.currentTimeMillis();
     }
 
     @Override
     public void paint(Graphics graphics) {
+        if (System.currentTimeMillis() - start > 0 && drawables.size() == 0) {
+            drawables.add(new Arena(new TestMob()));
+        }
         Graphics2D g = (Graphics2D) graphics;
 
         g.setColor(Color.WHITE);

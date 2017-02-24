@@ -2,6 +2,7 @@ package ryan.shavell.main.logic.entity.battle;
 
 import ryan.shavell.main.dialogue.actions.DialogAction;
 import ryan.shavell.main.dialogue.DialogBox;
+import ryan.shavell.main.logic.entity.battle.attacks.Attack;
 
 import java.awt.image.BufferedImage;
 import java.util.List;
@@ -89,6 +90,11 @@ public abstract class Mob {
         return (getCurrentHealth() * 1.0) / (getMaxHealth() * 1.0);
     }
 
+    public abstract String getNewTurnText();
+    public abstract Attack getNextAttack();
+
+    public abstract List<DialogAction> onAfterAttack(Attack a);
+    public abstract List<DialogAction> onAttack();
     public abstract List<DialogAction> onACT(String option);
 
     public abstract String[] getACT();

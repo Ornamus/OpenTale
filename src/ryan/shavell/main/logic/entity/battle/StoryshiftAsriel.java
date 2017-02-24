@@ -5,30 +5,23 @@ import ryan.shavell.main.logic.entity.battle.attacks.*;
 import ryan.shavell.main.resources.Animation;
 import ryan.shavell.main.resources.SpriteSheet;
 import ryan.shavell.main.stuff.Utils;
+
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.List;
 
-public class TestMob extends Mob {
+public class StoryshiftAsriel extends Mob {
 
     private SpriteSheet sheet;
     private BufferedImage current;
 
     private Animation talk1, talk2, talk3, talk4, talk5;
     private String lastAction = null;
-
-    /*
-    private String[] randomStarts = {"Asriel pats his fur down.", "Asriel thinks about what to wear for his date.", "Asriel whispers \"So cool!\"",
-    "Asriel wonders where Chara hid his God of Hyperdeath outfit.", "Asriel prepares a star attack.", "Asriel is excited to be the test mob for the engine.",
-    "Asriel imagines you as a tiny, yellow flower. He chuckles.", "Asriel seems to be concentrating on something.",
-    "Asriel has sent you a file:/nNot_a_Virus.exe"};
-    */
-
     private String[] randomStarts = {"Asriel is considering his clothes for later.", "Smells like goat.", "Asriel prepares a star attack.",
-    "Asriel chuckles confidently.", "Asriel prepares a fire attack, but realizes his mistake and hastily fixes it.", "Asriel whispers \"So cool!\"",
-    "Asriel pats his ear fur down to look more intimidating.", "Asriel remembers a joke Chara told and snorts.", "Asriel tries to play it cool."};
+            "Asriel chuckles confidently.", "Asriel prepares a fire attack, but realizes his mistake and hastily fixes it.", "Asriel whispers \"So cool!\"",
+            "Asriel pats his ear fur down to look more intimidating.", "Asriel remembers a joke Chara told and snorts.", "Asriel tries to play it cool."};
 
-    public TestMob() {
+    public StoryshiftAsriel() {
         super(100);
         sheet = new SpriteSheet(35, 71, 6, 2, "asriel_battle_temp");
         current = sheet.getImage(0, 0);
@@ -39,10 +32,8 @@ public class TestMob extends Mob {
 
     @Override
     public String getNewTurnText() {
-        if (lastAction.equals("Flirt")) {
-            return "* Asriel seems flustered.";
-        } else if (lastAction.equals("Insult")) {
-            return "* Asriel resists the urge to say \"NYEH HEH HEH!\"";
+        if (starstruck) {
+            return "* You're starstruck now.";
         } else {
             return "* " + randomStarts[Utils.randomNumber(0, randomStarts.length - 1)];
         }
@@ -50,23 +41,31 @@ public class TestMob extends Mob {
 
     @Override
     public Attack getNextAttack() {
-        Attack a = null;
-        if (lastAction.equals("Insult")) {
-            a = new BlueAttack();
+        Attack a;
+        if (lastAction.equals("Flirt")) {
+            a = new TestAttack2();
         } else {
-            int num = Utils.randomNumber(0, 3);
-            if (num == 0) a = new TestAttack();
-            else if (num == 1) a = new TestAttack2();
-            else if (num == 2) a = new TestAttack3();
-            else if (num == 3) a = new FireRain();
+            a = new FireRain();
         }
-        //a = new TestAttack3();
         return a;
     }
+
+    boolean starstruck = false;
 
     @Override
     public List<DialogAction> onAfterAttack(Attack a) {
         List<DialogAction> actions = new ArrayList<>();
+        if (a instanceof TestAttack2) {
+            starstruck = true;
+            actions.add(new ActionImageChange(sheet.getImage(0, 0)));
+            actions.add(new ActionTalk("Did you honestly think that my strongest attack...", "asriel_text"));
+            actions.add(new ActionTalk("Would be so predictable?", "asriel_text"));
+            actions.add(new ActionTalk("This isn't some lousy little bullet!", "asriel_text"));
+            actions.add(new ActionImageChange(sheet.getImage(4, 0)));
+            actions.add(new ActionTalk("This is the stuff of legends!!", "asriel_text"));
+            actions.add(new ActionTalk("Hah hah hah hah!!", "asriel_text"));
+            actions.add(new ActionImageChange(sheet.getImage(0, 0)));
+        }
         actions.add(new ActionPlayerTurn());
         return actions;
     }
@@ -74,8 +73,10 @@ public class TestMob extends Mob {
     @Override
     public List<DialogAction> onAttack() {
         List<DialogAction> actions = new ArrayList<>();
+        /*
         actions.add(new ActionImageChange(sheet.getImage(4, 0)));
         actions.add(new ActionTalk("You think THAT can stop me?", "asriel_text"));
+        */
         actions.add(new ActionStartAttack());
         lastAction = "FIGHT";
         return actions;
@@ -86,12 +87,22 @@ public class TestMob extends Mob {
         System.out.println("ASRIEL was acted on with \"" + option + "\"!");
         List<DialogAction> actions = new ArrayList<>();
         if (option.equals("Flirt")) {
-            actions.add(new ActionDialog("* You flirt with Asriel."));
             actions.add(new ActionImageChange(sheet.getImage(1, 0)));
-            actions.add(new ActionTalk("Wha-what?", "asriel_text"));
-            actions.add(new ActionTalk("What are you doing?", "asriel_text"));
+            actions.add(new ActionTalk("Wh-whoa, what?", "asriel_text"));
+            actions.add(new ActionTalk("Are you...", "asriel_text"));
             actions.add(new ActionImageChange(sheet.getImage(2, 0)));
-            actions.add(new ActionTalk("Take this seriously! Focus on the fight!", "asriel_text"));
+            actions.add(new ActionTalk("Are you kidding me?! This is a fight!", "asriel_text"));
+            actions.add(new ActionImageChange(sheet.getImage(3, 0)));
+            actions.add(new ActionTalk("Does this look like some joke to you?", "asriel_text"));
+            actions.add(new ActionDialog("(The option dialog about seriousness pops up here)"));
+            actions.add(new ActionTalk("Hah hah...", "asriel_text"));
+            actions.add(new ActionTalk("Lets talk about this after the fight!", "asriel_text"));
+            actions.add(new ActionImageChange(sheet.getImage(0, 0)));
+            actions.add(new ActionTalk("So you won't fight me?", "asriel_text"));
+            actions.add(new ActionImageChange(sheet.getImage(4, 0)));
+            actions.add(new ActionTalk("Heh, I don't blame you.", "asriel_text"));
+            actions.add(new ActionTalk("Let's see how you handle my fabled STAR BLAZING.", "asriel_text"));
+            actions.add(new ActionTalk("Behold!", "asriel_text"));
         } else if (option.equals("Insult")) {
             actions.add(new ActionImageChange(sheet.getImage(0, 0)));
             actions.add(new ActionTalk("Hey, I know we're battling and all, but...", "asriel_text"));

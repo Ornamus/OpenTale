@@ -6,9 +6,9 @@ import ryan.shavell.main.logic.entity.battle.Arena;
 
 public class ActionTalk extends DialogAction {
 
-    public ActionTalk(String text) {
+    public ActionTalk(String text, String sound) {
         super(()-> {
-            Arena.getChatBubble().setText(text, true);
+            Arena.getChatBubble().setText(text, sound);
         }, ()-> {
             ChatBox box = Arena.getChatBubble();
             boolean done = !box.isScrolling() && box.shouldMoveOn();

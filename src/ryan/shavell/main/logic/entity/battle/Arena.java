@@ -5,11 +5,12 @@ import ryan.shavell.main.core.player.PlayerInfo;
 import ryan.shavell.main.core.player.Weapon;
 import ryan.shavell.main.dialogue.ChatBox;
 import ryan.shavell.main.dialogue.actions.ActionDialog;
-import ryan.shavell.main.dialogue.actions.ActionTalk;
+import ryan.shavell.main.dialogue.actions.ActionStartAttack;
 import ryan.shavell.main.dialogue.actions.DialogAction;
 import ryan.shavell.main.logic.InputTaker;
 import ryan.shavell.main.logic.SoulType;
 import ryan.shavell.main.dialogue.DialogBox;
+import ryan.shavell.main.logic.entity.battle.attacks.*;
 import ryan.shavell.main.render.Board;
 import ryan.shavell.main.render.Drawable;
 import ryan.shavell.main.resources.AudioHandler;
@@ -26,18 +27,23 @@ import java.util.List;
 
 public class Arena implements InputTaker, Drawable {
 
-    //TODO: fighting, health stuff, code cleanup
+    //TODO: code cleanup, prettify
+
+    public static Arena self;
 
     private SpriteSheet buttons;
-    private SoulType soulType;
 
     private BufferedImage hp;
     private BufferedImage fightGUI;
 
     private SpriteSheet battlePointer;
 
+    private static SoulType soulType;
+
     private static DialogBox dialogBox;
     private static ChatBox chatBubble;
+
+    private static BattleBox battleBox;
 
     private static Mob mob;
 
@@ -46,10 +52,10 @@ public class Arena implements InputTaker, Drawable {
     private final Point itemPoint = new Point(346, 433);
     private final Point mercyPoint = new Point(501, 433);
 
-    private int selected = 0;
-    private int subMenu = -1;
+    public int selected = 0;
+    public int subMenu = -1;
 
-    private boolean freezeMenu = false;
+    public boolean freezeMenu = false;
 
     private boolean doingAttack = false;
     private boolean didTarget = false;
@@ -59,15 +65,21 @@ public class Arena implements InputTaker, Drawable {
     private int battleTargeterX;
     private int healthLost = 0;
     private long timeOfDamageDeal = -1;
-
     private List<DialogAction> actions = new ArrayList<>();
+
+    public boolean mobTurn = false;
 
     private String[] oldOptions = null;
 
     private String mobMusic = null;
     private boolean oldDidTarget = didTarget;
 
+    private int damageShakeTargetX = 0;
+    private int adjustAmount = 15;
+    private Long timeSinceLastAdjust = null;
+
     public Arena(Mob mob) {
+        self = this;
         this.mob = mob;
         buttons = new SpriteSheet(110, 42, 2, 4, "battle_buttons");
         soulType = SoulType.NORMAL;
@@ -75,22 +87,33 @@ public class Arena implements InputTaker, Drawable {
         dialogBox = new DialogBox(251);
         chatBubble = new ChatBox(80);
 
+        battleBox = new BattleBox(Main.WIDTH / 2);
+
         hp = ImageLoader.getImage("hp");
         fightGUI = ImageLoader.getImage("fight_gui");
         battlePointer = new SpriteSheet(14, 128, 2, 1, "battle_target");
 
-        dialogBox.setText("* ASRIEL takes a stand!");
+        dialogBox.setText("* Asriel takes a stand!");
+    }
+
+    public void resetAttackVariables() {
+        doingAttack = false;
+        didTarget = false;
+        midAttack = false;
+        damageAnim = false;
+        dealtDamage = false;
+        timeOfDamageDeal = -1;
+        battleTargeterX = dialogBox.getX() + 5;
+        damageShakeTargetX = 0;
+        adjustAmount = 15;
+        timeSinceLastAdjust = null;
     }
 
     public void optionSelect(int option, int whichSubMenu) {
         if (whichSubMenu == 0) { //FIGHT
-            freezeMenu = true;
+            resetAttackVariables();
             doingAttack = true;
-            didTarget = false;
-            damageAnim = false;
-            dealtDamage = false;
-            timeOfDamageDeal = -1;
-            battleTargeterX = dialogBox.getX() + 5;
+            freezeMenu = true;
             subMenu = -1;
             selected = -1;
             dialogBox.setText("");
@@ -99,11 +122,12 @@ public class Arena implements InputTaker, Drawable {
             if (optionString.equalsIgnoreCase("Check")) {
                 actions.clear();
                 actions.add(new ActionDialog(mob.getCheckInfo()));
+                actions.add(new ActionStartAttack());
             } else {
                 actions = mob.onACT(optionString);
-                dialogBox.setText("");
                 //System.out.println("Got " + actions.size() + " actions");
             }
+            dialogBox.setText("");
             subMenu = -1;
             selected = -1;
             freezeMenu = true;
@@ -172,13 +196,17 @@ public class Arena implements InputTaker, Drawable {
 
         if (subMenu == oldSubMenu) {
             dialogBox.onKeyPress(e);
+            chatBubble.onKeyPress(e);
         }
-        chatBubble.onKeyPress(e);
+        if (mobTurn) battleBox.onKeyPress(e);
+        //chatBubble.onKeyPress(e);
     }
 
     @Override
     public void onKeyRelease(KeyEvent e) {
         dialogBox.onKeyRelease(e);
+        chatBubble.onKeyRelease(e);
+        if (mobTurn) battleBox.onKeyRelease(e);
     }
 
     int type = 0;
@@ -212,6 +240,7 @@ public class Arena implements InputTaker, Drawable {
                 optionSelect(dialogBox.getSelectedOption(), subMenu);
             }
         }
+
         if (subMenu == -1 && actions.size() > 0) {
             DialogAction current = actions.get(0);
             //System.out.println("PROCESSING ACTION");
@@ -225,30 +254,48 @@ public class Arena implements InputTaker, Drawable {
             }
         }
 
+        boolean missed = false;
+        if (doingAttack && !didTarget && battleTargeterX > dialogBox.getX() + dialogBox.getWidth()) {
+            didTarget = true;
+            missed = true;
+            damageAnim = true;
+            //System.out.println("HEEEEEEEEEEEEY");
+        }
+
         Weapon w = PlayerInfo.weapon;
         if (doingAttack && !didTarget) {
             battleTargeterX += 7; //8
-        } else if (doingAttack && didTarget && !oldDidTarget) { //Runs right when the player locked in
+        } else if (doingAttack && didTarget && !oldDidTarget && !missed) { //Runs right when the player locked in
             w.reset();
             AudioHandler.playEffect(w.getSound());
             midAttack = true;
         } else if (doingAttack && damageAnim && !dealtDamage) {
             //TODO: damage is different based off of where the attack target was
             int damage = w.getDamage();
+            if (missed) damage = 0;
             mob.setCurrentHealth(mob.getCurrentHealth() - damage);
             if (mob.getCurrentHealth() < 0) mob.setCurrentHealth(0);
             healthLost = damage;
             timeOfDamageDeal = System.currentTimeMillis();
             dealtDamage = true;
-            AudioHandler.playEffect("mob_hit");
+            if (!missed) AudioHandler.playEffect("mob_hit");
         } else if (doingAttack && dealtDamage && (System.currentTimeMillis() - timeOfDamageDeal) >= 1250) {
-            doingAttack = false;
-
-            //TODO: start mob attack instead of all of this
-            freezeMenu = false;
-            selected = 0;
-            dialogBox.setText("* ASRIEL seems shaken.");
+            actions.clear();
+            actions = mob.onAttack();
+            resetAttackVariables();
         }
+
+        if (mobTurn && battleBox.isDone()) {
+            mobTurn = false;
+            actions.clear();
+            actions = mob.onAfterAttack(battleBox.getAttack());
+            /*
+            freezeMenu = false;
+            dialogBox.setText(mob.getNewTurnText());
+            selected = 0;
+            */
+        }
+
         oldDidTarget = didTarget;
 
         String music = mob.getMusic();
@@ -265,6 +312,18 @@ public class Arena implements InputTaker, Drawable {
 
         dialogBox.tick();
         chatBubble.tick();
+        if (mobTurn) battleBox.tick();
+    }
+
+    public void startMobTurn() {
+        resetAttackVariables();
+        selected = -1;
+        freezeMenu = true;
+        dialogBox.setText("");
+        Attack a = mob.getNextAttack();
+        battleBox.setAttack(a);
+        battleBox.doResizeAnimation(575, 140, a.getWidth(), a.getHeight());
+        mobTurn = true;
     }
 
     @Override
@@ -296,14 +355,19 @@ public class Arena implements InputTaker, Drawable {
             height *= 2;
         }
 
-        int centerX = (Board.self.getWidth() / 2);
+        int centerX = Main.WIDTH / 2;
         int x = centerX - (width / 2);
 
-        g.drawImage(mob.getImage(), x, mob.getY(), width, height, null);
+        if (!dealtDamage) g.drawImage(mob.getImage(), x, mob.getY(), width, height, null);
 
         drawPlayerInfo(g);
-        dialogBox.draw(g);
         chatBubble.draw(g);
+
+        if (mobTurn) {
+            battleBox.draw(g);
+        } else {
+            dialogBox.draw(g);
+        }
 
         if (subMenu == 1) {
             /*
@@ -332,11 +396,35 @@ public class Arena implements InputTaker, Drawable {
                     PlayerInfo.weapon.drawEffect(centerX, mob.getY(), g);
                 } else {
                     damageAnim = true;
+                    System.out.println("Animation done");
                 }
             } else if (dealtDamage) {
-                //TODO: ANIMATE THE HEALTH BAR GOING DOWN UGHUGHUGUHDHGH
-                //TODO: Mob sprite changes and shakes
+                //TODO: Animate the health bar going down
                 //TODO: bouncing damage numbers
+                int renderX = x;
+                if (healthLost > 0) {
+                    if (timeSinceLastAdjust == null) {
+                        damageShakeTargetX = x - adjustAmount;
+                        timeSinceLastAdjust = System.currentTimeMillis();
+                    }
+                    if (timeSinceLastAdjust != null && System.currentTimeMillis() - timeSinceLastAdjust > 100){
+                        adjustAmount -= 3;
+                        if (adjustAmount <= 0) {
+                            damageShakeTargetX = x;
+                        } else {
+                            if (damageShakeTargetX > x) {
+                                damageShakeTargetX = x - adjustAmount;
+                            } else {
+                                damageShakeTargetX = x + adjustAmount;
+                            }
+                        }
+                        timeSinceLastAdjust = System.currentTimeMillis();
+                    }
+                    renderX = damageShakeTargetX;
+                }
+                BufferedImage mobImage = healthLost > 0 ? mob.getHitImage() : mob.getImage();
+                g.drawImage(mobImage, renderX, mob.getY(), width, height, null);
+
                 int hBarWidth = 103, hBarHeight = 15;
                 int hBarX = centerX - (hBarWidth / 2), hBarY = mob.getY() - 25;
 
@@ -358,6 +446,7 @@ public class Arena implements InputTaker, Drawable {
                     damage = "" + healthLost;
                 } else {
                     damage = "MISS";
+                    g.setColor(Color.WHITE);
                 }
                 g.drawString(damage, centerX - (g.getFontMetrics().stringWidth(damage) / 2), hBarY - 15);
 
@@ -381,14 +470,19 @@ public class Arena implements InputTaker, Drawable {
         g.drawString(PlayerInfo.name + "  LV " + PlayerInfo.level, stats.x, stats.y);
         //g.drawString("SHIFTY  LV 1", stats.x, stats.y); //TODO: pull name and level variables from player info once that exists
 
-        g.setColor(Color.YELLOW);
+        g.setColor(UnderColor.UNDER_HEALTHBAR_RED);
         Rectangle rect = new Rectangle(actPoint.x + 90, stats.y - 18, 25, 21);
         g.fillRect(rect.x, rect.y, rect.width, rect.height);
+
+        g.setColor(UnderColor.YELLOW);
+        double percent = (PlayerInfo.currentHealth * 1.0) / (PlayerInfo.maxHealth * 1.0);
+        int healthWidth = (int) Math.round(rect.width * percent);
+        g.fillRect(rect.x, rect.y, healthWidth, rect.height);
 
         g.drawImage(hp, rect.x - 31, rect.y + 5, null); //TODO: tune perfectly (268, 408) (might be perfect now)
 
         g.setColor(Color.WHITE);
-        g.drawString("20 / 20", rect.x + rect.width + 14, stats.y);
+        g.drawString(PlayerInfo.currentHealth + " / " + PlayerInfo.maxHealth, rect.x + rect.width + 14, stats.y);
     }
 
     public BufferedImage getFight() {
@@ -418,6 +512,21 @@ public class Arena implements InputTaker, Drawable {
 
     public static ChatBox getChatBubble() {
         return chatBubble;
+    }
+
+    public static BattleBox getBattleBox() {
+        return battleBox;
+    }
+
+    public static void setSoulType(SoulType t) {
+        if (soulType != t) {
+            //TODO: play sound effect
+        }
+        soulType = t;
+    }
+
+    public static SoulType getSoulType() {
+        return soulType;
     }
 
     public static Mob getMob() {

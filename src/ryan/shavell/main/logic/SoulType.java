@@ -1,5 +1,6 @@
 package ryan.shavell.main.logic;
 
+import ryan.shavell.main.resources.Animation;
 import ryan.shavell.main.resources.SpriteSheet;
 
 import java.awt.image.BufferedImage;
@@ -18,10 +19,18 @@ public enum SoulType {
     private static SpriteSheet souls = new SpriteSheet(16, 16, 6, 2, "souls");
 
     private int x, y;
+    private Animation damaged = null;
 
     SoulType(int x, int y) {
         this.x = x;
         this.y = y;
+    }
+
+    public Animation getDamagedAnimation() {
+        if (damaged == null) {
+            damaged = new Animation(3, getDamagedImage(), getImage());
+        }
+        return damaged;
     }
 
     public BufferedImage getImage() {

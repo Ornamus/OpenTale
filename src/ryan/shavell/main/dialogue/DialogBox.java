@@ -3,6 +3,7 @@ package ryan.shavell.main.dialogue;
 import ryan.shavell.main.core.Main;
 import ryan.shavell.main.logic.InputTaker;
 import ryan.shavell.main.logic.SoulType;
+import ryan.shavell.main.logic.entity.battle.Arena;
 import ryan.shavell.main.render.Drawable;
 import ryan.shavell.main.resources.AudioHandler;
 import java.awt.*;
@@ -244,7 +245,7 @@ public class DialogBox implements Drawable, InputTaker {
                 System.out.println("INVALID POINT SELECTED IN DIALOGBOX");
                 p = null;
             }
-            g.drawImage(SoulType.NORMAL.getImage(), p.x - 28, p.y - 16, null);
+            g.drawImage(Arena.getSoulType().getImage(), p.x - 28, p.y - 16, null);
         }
     }
 
@@ -259,5 +260,17 @@ public class DialogBox implements Drawable, InputTaker {
 
     public int getY() {
         return y;
+    }
+
+    public int getWidth() {
+        return dialogWidth;
+    }
+
+    public ScrollText getMainText() {
+        return text;
+    }
+
+    public int getHeight() {
+        return dialogHeight;
     }
 }

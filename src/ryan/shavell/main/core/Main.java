@@ -4,6 +4,7 @@ import ryan.shavell.main.render.Board;
 import ryan.shavell.main.stuff.Input;
 import javax.swing.*;
 import java.awt.*;
+import java.io.InputStream;
 
 public class Main extends JFrame {
 
@@ -12,13 +13,15 @@ public class Main extends JFrame {
 
     public static Font MENU, DIALOGUE, SQUISH_MENU, BATTLE_DIALOG, BATTLE_NUMBERS;
 
+    public static final int WIDTH = 640, HEIGHT = 480;
+
     public Main() {
         try {
-            DIALOGUE = Font.createFont(Font.TRUETYPE_FONT, getClass().getResourceAsStream("DTM-Mono.otf")).deriveFont(Font.PLAIN, 27);
-            MENU = Font.createFont(Font.TRUETYPE_FONT, getClass().getResourceAsStream("DTM-Sans.otf")).deriveFont(Font.PLAIN, 27);
-            SQUISH_MENU = Font.createFont(Font.TRUETYPE_FONT, getClass().getResourceAsStream("Mars.ttf")).deriveFont(Font.PLAIN, 24); //TODO: almost perfect 52
+            DIALOGUE = Font.createFont(Font.TRUETYPE_FONT, getClass().getResource("DTM-Mono.otf").openStream()).deriveFont(Font.PLAIN, 27);
+            MENU = Font.createFont(Font.TRUETYPE_FONT, getClass().getResource("DTM-Sans.otf").openStream()).deriveFont(Font.PLAIN, 27);
+            SQUISH_MENU = Font.createFont(Font.TRUETYPE_FONT, getClass().getResource("Mars.ttf").openStream()).deriveFont(Font.PLAIN, 24); //TODO: almost perfect 52
             BATTLE_DIALOG = DIALOGUE.deriveFont(Font.PLAIN, 16);
-            BATTLE_NUMBERS = Font.createFont(Font.TRUETYPE_FONT, getClass().getResourceAsStream("hachicro.ttf")).deriveFont(Font.PLAIN, 30); //TODO: a little small, spacing is off either way though
+            BATTLE_NUMBERS = Font.createFont(Font.TRUETYPE_FONT, getClass().getResource("hachicro.ttf").openStream()).deriveFont(Font.PLAIN, 30); //TODO: a little small, spacing is off either way though
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -27,7 +30,7 @@ public class Main extends JFrame {
         input = new Input();
         addKeyListener(input);
         addMouseListener(input);
-        setSize(640 + 6, 480 + 29);
+        setSize(WIDTH + 6, HEIGHT + 29);
         setResizable(false);
         setTitle("OPENTALE");
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);

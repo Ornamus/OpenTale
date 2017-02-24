@@ -26,7 +26,7 @@ public class Knife extends Weapon {
 
     @Override
     public void drawEffect(int x, int y, Graphics2D g) {
-        g.drawImage(anim.getImage(), x + 25, y, null);
+        g.drawImage(anim.getImage(), x + 0, y, null);
     }
 
     @Override

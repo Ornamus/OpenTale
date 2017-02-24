@@ -5,7 +5,7 @@ import ryan.shavell.main.resources.ImageLoader;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 
-public class ChatBox extends DialogBox{
+public class ChatBox extends DialogBox {
 
     private BufferedImage bubble;
 
@@ -14,9 +14,14 @@ public class ChatBox extends DialogBox{
 
         bubble = ImageLoader.getImage("chatbubble");
 
-        setTextWidthLimit(200); //TODO: find the right limit for text
+        setTextWidthLimit(200);
 
         setVisuals(Color.BLACK, Main.BATTLE_DIALOG);
+    }
+
+    public void setText(String text, String sound) {
+        getMainText().setSound(sound);
+        setText(text);
     }
 
     @Override
