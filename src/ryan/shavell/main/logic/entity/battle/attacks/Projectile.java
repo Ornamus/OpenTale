@@ -1,6 +1,7 @@
 package ryan.shavell.main.logic.entity.battle.attacks;
 
 import ryan.shavell.main.render.Drawable;
+import ryan.shavell.main.resources.Animation;
 import ryan.shavell.main.resources.ImageLoader;
 import java.awt.*;
 import java.awt.image.BufferedImage;
@@ -13,7 +14,8 @@ public class Projectile implements Drawable {
     protected int hitbox_niceness = 1;
 
     protected double drawAngle = 0;
-    protected BufferedImage image;
+    protected Animation animation;
+    protected BufferedImage frame = null;
 
     protected double moveSpeed = 2;
     protected boolean rotateToAngle = false;
@@ -30,10 +32,14 @@ public class Projectile implements Drawable {
         this.x = x;
         this.y = y;
         angle = angleOfMovement;
-        if (img != null) image = img;
-        if (image == null) {
-            System.out.println("OH NO");
-        }
+        if (img != null) animation = new Animation(0, img);
+    }
+
+    public Projectile(int x, int y, double angleOfMovement, Animation a) {
+        this.x = x;
+        this.y = y;
+        angle = angleOfMovement;
+        if (a != null) animation = a;
     }
 
     public Projectile setMoveSpeed(double speed) {
@@ -74,7 +80,9 @@ public class Projectile implements Drawable {
             if (rotateToAngle) {
                 //TODO
             } else {
-                hitbox = new Rectangle(getXRound() + hitbox_niceness, getYRound() + hitbox_niceness, image.getWidth() - (hitbox_niceness * 2), image.getHeight() - (hitbox_niceness * 2));
+                if (frame != null) {
+                    hitbox = new Rectangle(getXRound() + hitbox_niceness, getYRound() + hitbox_niceness, frame.getWidth() - (hitbox_niceness * 2), frame.getHeight() - (hitbox_niceness * 2));
+                }
             }
         }
         return hitbox;
@@ -89,7 +97,8 @@ public class Projectile implements Drawable {
         if (rotateToAngle) {
             //TODO
         } else {
-            g.drawImage(image, getXRound(), getYRound(), null);
+            frame = animation.getImage();
+            g.drawImage(frame, getXRound(), getYRound(), null);
         }
     }
 }

@@ -5,13 +5,13 @@ import ryan.shavell.main.dialogue.ConsumerAndSupplier;
 import java.util.function.BooleanSupplier;
 import java.util.function.Consumer;
 
-public class DialogAction {
+public class Action {
 
     private Runnable runnable;
     private BooleanSupplier done;
     private boolean hasRun = false;
 
-    public DialogAction(Runnable r, BooleanSupplier b) {
+    public Action(Runnable r, BooleanSupplier b) {
         runnable = r;
         done = b;
     }

@@ -4,7 +4,6 @@ import ryan.shavell.main.core.Main;
 import ryan.shavell.main.core.player.PlayerInfo;
 import ryan.shavell.main.logic.InputTaker;
 import ryan.shavell.main.logic.SoulType;
-import ryan.shavell.main.logic.entity.battle.Arena;
 import ryan.shavell.main.logic.entity.battle.attacks.Attack;
 import ryan.shavell.main.logic.entity.battle.attacks.Projectile;
 import ryan.shavell.main.render.Drawable;
@@ -16,6 +15,8 @@ import java.awt.geom.Line2D;
 import java.awt.image.BufferedImage;
 
 //TODO: center y instead of having it be from the top (small y attacks look offset right now)
+//TODO: is pre-programmed/constructor-passed x and y redundant now, since resizing and recalculatingBounds throws those values that out the window?
+//TODO: resize box and show heart while pre-attack mob dialog is happening
 
 public class BattleBox implements Drawable, InputTaker {
 
@@ -101,10 +102,10 @@ public class BattleBox implements Drawable, InputTaker {
                 if (keyLeft) soulX -= SOUL_SPEED;
                 if (keyRight) soulX += SOUL_SPEED;
                 if (keyUp) {
-                    if (!falling && jumpHeight <= 70) { //TODO: tune
-                        soulY -= 5;
+                    if (!falling && jumpHeight <= 60) { //TODO: tune
+                        soulY -= 4;
                         momentum = 2;
-                        jumpHeight += 5;
+                        jumpHeight += 4;
                     } else {
                         falling = true;
                     }
@@ -155,13 +156,15 @@ public class BattleBox implements Drawable, InputTaker {
             if (attack != null) {
                 attack.tick();
                 for (Projectile p : attack.getProjectiles()) {
-                    if (box.intersects(p.getHitbox()) && !immune) {
-                        AudioHandler.playEffect("soul_hit");
-                        immune = true;
-                        timeSinceHit = System.currentTimeMillis();
-                        PlayerInfo.currentHealth -= p.getDamage();
-                        if (PlayerInfo.currentHealth <= 0) PlayerInfo.currentHealth = 0;
-                        Arena.getSoulType().getDamagedAnimation().reset(); //TODO; put this somewhere better?
+                    if (p.getHitbox() != null) {
+                        if (box.intersects(p.getHitbox()) && !immune) {
+                            AudioHandler.playEffect("soul_hit");
+                            immune = true;
+                            timeSinceHit = System.currentTimeMillis();
+                            PlayerInfo.currentHealth -= p.getDamage();
+                            if (PlayerInfo.currentHealth <= 0) PlayerInfo.currentHealth = 0;
+                            Arena.getSoulType().getDamagedAnimation().reset(); //TODO; put this somewhere better?
+                        }
                     }
                 }
             }
@@ -206,6 +209,7 @@ public class BattleBox implements Drawable, InputTaker {
         width = endWidth;
         height = endHeight;
         x = (Main.WIDTH / 2) - (width / 2);
+        //TODO: y
         recalculateBounds();
 
         this.currentWidth = startWidth;

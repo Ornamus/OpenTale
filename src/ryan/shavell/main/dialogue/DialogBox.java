@@ -35,7 +35,7 @@ public class DialogBox implements Drawable, InputTaker {
     }
 
     public DialogBox(int x, int y) {
-        this(x, y, x + 22, y + 40);
+        this(x, y, x + 20, y + 46); //x + 22, y + 40
     }
 
     //TODO: when to use DIALOGUE vs MENU
@@ -147,7 +147,8 @@ public class DialogBox implements Drawable, InputTaker {
     }
 
     public boolean shouldMoveOn() {
-        return shouldMoveOn;
+        String text = getText();
+        return shouldMoveOn || (text != null && text.equals(""));
     }
 
     public int getSelectedOption() {

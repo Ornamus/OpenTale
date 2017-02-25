@@ -6,7 +6,8 @@ import ryan.shavell.main.core.player.Weapon;
 import ryan.shavell.main.dialogue.ChatBox;
 import ryan.shavell.main.dialogue.actions.ActionDialog;
 import ryan.shavell.main.dialogue.actions.ActionStartAttack;
-import ryan.shavell.main.dialogue.actions.DialogAction;
+import ryan.shavell.main.dialogue.actions.Action;
+import ryan.shavell.main.dialogue.actions.ActionTriggerPreAttack;
 import ryan.shavell.main.logic.InputTaker;
 import ryan.shavell.main.logic.SoulType;
 import ryan.shavell.main.dialogue.DialogBox;
@@ -35,6 +36,7 @@ public class Arena implements InputTaker, Drawable {
 
     private BufferedImage hp;
     private BufferedImage fightGUI;
+    private BufferedImage background = null;
 
     private SpriteSheet battlePointer;
 
@@ -65,7 +67,7 @@ public class Arena implements InputTaker, Drawable {
     private int battleTargeterX;
     private int healthLost = 0;
     private long timeOfDamageDeal = -1;
-    private List<DialogAction> actions = new ArrayList<>();
+    public List<Action> actions = new ArrayList<>();
 
     public boolean mobTurn = false;
 
@@ -81,6 +83,11 @@ public class Arena implements InputTaker, Drawable {
     public Arena(Mob mob) {
         self = this;
         this.mob = mob;
+
+        if (mob.isBoss()) {
+            background = ImageLoader.getImage("battle_background_boss");
+        }
+
         buttons = new SpriteSheet(110, 42, 2, 4, "battle_buttons");
         soulType = SoulType.NORMAL;
 
@@ -94,6 +101,7 @@ public class Arena implements InputTaker, Drawable {
         battlePointer = new SpriteSheet(14, 128, 2, 1, "battle_target");
 
         dialogBox.setText("* Asriel takes a stand!");
+        //dialogBox.setText("* You feel like you're going to have a bad time.");
     }
 
     public void resetAttackVariables() {
@@ -122,7 +130,7 @@ public class Arena implements InputTaker, Drawable {
             if (optionString.equalsIgnoreCase("Check")) {
                 actions.clear();
                 actions.add(new ActionDialog(mob.getCheckInfo()));
-                actions.add(new ActionStartAttack());
+                actions.add(new ActionTriggerPreAttack());
             } else {
                 actions = mob.onACT(optionString);
                 //System.out.println("Got " + actions.size() + " actions");
@@ -242,7 +250,7 @@ public class Arena implements InputTaker, Drawable {
         }
 
         if (subMenu == -1 && actions.size() > 0) {
-            DialogAction current = actions.get(0);
+            Action current = actions.get(0);
             //System.out.println("PROCESSING ACTION");
             if (!current.hasRun()) {
                 current.run();
@@ -330,6 +338,10 @@ public class Arena implements InputTaker, Drawable {
     public void draw(Graphics2D g) {
         g.setColor(Color.BLACK);
         g.fillRect(0, 0, Board.self.getWidth(), Board.self.getHeight());
+
+        if (background != null) {
+            g.drawImage(background, 0, 0, null);
+        }
 
         g.drawImage(getFight(), fightPoint.x, fightPoint.y, null);
         g.drawImage(getAct(), actPoint.x, actPoint.y, null);

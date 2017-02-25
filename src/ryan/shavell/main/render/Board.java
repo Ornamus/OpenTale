@@ -29,7 +29,7 @@ public class Board extends JPanel implements ActionListener {
         drawables.add(new OverworldEntity(100, 100, "sans_temp"));
         drawables.add(new OverworldPlayer(200, 200));
         */
-        //drawables.add(new Arena(new StoryshiftAsriel()));
+        drawables.add(new Arena(new StoryshiftAsriel()));
         t = new Timer(25, this);
         t.start();
         start = System.currentTimeMillis();
@@ -37,9 +37,6 @@ public class Board extends JPanel implements ActionListener {
 
     @Override
     public void paint(Graphics graphics) {
-        if (System.currentTimeMillis() - start > 0 && drawables.size() == 0) {
-            drawables.add(new Arena(new TestMob()));
-        }
         Graphics2D g = (Graphics2D) graphics;
 
         g.setColor(Color.WHITE);

@@ -2,7 +2,7 @@ package ryan.shavell.main.dialogue.actions;
 
 import ryan.shavell.main.logic.entity.battle.Arena;
 
-public class ActionPlayerTurn extends DialogAction {
+public class ActionPlayerTurn extends Action {
 
     public ActionPlayerTurn() {
         super(()-> {

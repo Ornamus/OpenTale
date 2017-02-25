@@ -10,7 +10,7 @@ public class TestAttack3 extends Attack {
     private Long timeOfLastStar = null;
 
     public TestAttack3() {
-        super(165, 50);
+        super(135, 70);
         setTimeLength(8);
     }
 
@@ -24,11 +24,15 @@ public class TestAttack3 extends Attack {
         super.tick();
         if (timeOfLastStar == null || System.currentTimeMillis() - timeOfLastStar >= 400) {
             Point soul = Arena.getBattleBox().getSOUL();
-            double angle = Utils.getAngle(Main.WIDTH / 2, 90, soul.x, soul.y);
+
+            int spawnX = (Main.WIDTH / 2) + 15;
+            int spawnY = 130;
+
+            double angle = Utils.getAngle(spawnX, spawnY, soul.x, soul.y);
             angle = -angle;
             angle -= 90;
             int angleVary = 0;
-            Projectile p1 = new ProjectileStar(Main.WIDTH / 2, 90, angle + Utils.randomNumber(-angleVary, angleVary));
+            Projectile p1 = new ProjectileStar(spawnX, spawnY, angle + Utils.randomNumber(-angleVary, angleVary));
             p1.setMoveSpeed(6);
             spawnProjectiles(p1);
             timeOfLastStar = System.currentTimeMillis();

@@ -3,10 +3,12 @@ package ryan.shavell.main.logic.entity.battle.attacks;
 import ryan.shavell.main.logic.SoulType;
 import ryan.shavell.main.logic.entity.battle.Arena;
 import ryan.shavell.main.render.Drawable;
-
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
+
+//TODO: add timer and delay functionality (NOT THREADED)
+//TODO: either use x and y or remove them
 
 public abstract class Attack implements Drawable {
 

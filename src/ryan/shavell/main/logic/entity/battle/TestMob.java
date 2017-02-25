@@ -7,6 +7,7 @@ import ryan.shavell.main.resources.SpriteSheet;
 import ryan.shavell.main.stuff.Utils;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class TestMob extends Mob {
@@ -65,26 +66,31 @@ public class TestMob extends Mob {
     }
 
     @Override
-    public List<DialogAction> onAfterAttack(Attack a) {
-        List<DialogAction> actions = new ArrayList<>();
+    public List<Action> onPreAttack() {
+        return Collections.singletonList(new ActionStartAttack());
+    }
+
+    @Override
+    public List<Action> onAfterAttack(Attack a) {
+        List<Action> actions = new ArrayList<>();
         actions.add(new ActionPlayerTurn());
         return actions;
     }
 
     @Override
-    public List<DialogAction> onAttack() {
-        List<DialogAction> actions = new ArrayList<>();
+    public List<Action> onAttack() {
+        List<Action> actions = new ArrayList<>();
         actions.add(new ActionImageChange(sheet.getImage(4, 0)));
         actions.add(new ActionTalk("You think THAT can stop me?", "asriel_text"));
-        actions.add(new ActionStartAttack());
+        actions.add(new ActionTriggerPreAttack());
         lastAction = "FIGHT";
         return actions;
     }
 
     @Override
-    public List<DialogAction> onACT(String option) {
+    public List<Action> onACT(String option) {
         System.out.println("ASRIEL was acted on with \"" + option + "\"!");
-        List<DialogAction> actions = new ArrayList<>();
+        List<Action> actions = new ArrayList<>();
         if (option.equals("Flirt")) {
             actions.add(new ActionDialog("* You flirt with Asriel."));
             actions.add(new ActionImageChange(sheet.getImage(1, 0)));
@@ -100,19 +106,19 @@ public class TestMob extends Mob {
             actions.add(new ActionTalk("I wasn't going to use this, but since you're being a little nasty...", "asriel_text"));
             actions.add(new ActionTalk("...I'll use this move a skeleton taught me!", "asriel_text"));
         }
-        actions.add(new ActionStartAttack());
+        actions.add(new ActionTriggerPreAttack());
         lastAction = option;
         return actions;
     }
 
     @Override
     public String[] getACT() {
-        lastAction = "CHECK";
         return new String[]{"Insult", "Flirt"};
     }
 
     @Override
     public String getCheckInfo() {
+        lastAction = "CHECK";
         return super.getCheckInfo() + "/n* Puts on a brave face, but gets emotional very easily.";
     }
 
@@ -129,6 +135,11 @@ public class TestMob extends Mob {
     @Override
     public BufferedImage getHitImage() {
         return sheet.getImage(5, 0);
+    }
+
+    @Override
+    public void setAnimation(Animation animation) {
+        //derp
     }
 
     @Override

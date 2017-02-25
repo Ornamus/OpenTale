@@ -14,6 +14,7 @@ public class Utils {
         return random.nextInt(max + 1 - min) + min;
     }
 
+    //TODO: make these angles make more sense
     public static double getAngle(int x1, int y1, int x2, int y2) {
         double angle = Math.toDegrees(Math.atan2(y1 - y2, x1 - x2));
         if(angle < 0){

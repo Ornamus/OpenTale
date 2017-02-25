@@ -5,7 +5,7 @@ import ryan.shavell.main.logic.entity.battle.Arena;
 /**
  * Created by Ryan Shavell on 2/23/2017.
  */
-public class ActionStartAttack extends DialogAction {
+public class ActionStartAttack extends Action {
     public ActionStartAttack() {
         super(()-> {
             Arena.self.startMobTurn();

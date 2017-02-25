@@ -1,8 +1,8 @@
 package ryan.shavell.main.logic.entity.battle;
 
-import ryan.shavell.main.dialogue.actions.DialogAction;
-import ryan.shavell.main.dialogue.DialogBox;
+import ryan.shavell.main.dialogue.actions.Action;
 import ryan.shavell.main.logic.entity.battle.attacks.Attack;
+import ryan.shavell.main.resources.Animation;
 
 import java.awt.image.BufferedImage;
 import java.util.List;
@@ -47,7 +47,7 @@ public abstract class Mob {
     }
 
     public String getCheckInfo() {
-        return "* " + name.toUpperCase() +  " " + getAttack() + " ATK " + getDefense() + " DEF";
+        return "* " + name.toUpperCase() +  " - ATK " + getAttack() + " DEF " + getDefense();
     }
 
     public void setCurrentHealth(int h) {
@@ -93,9 +93,11 @@ public abstract class Mob {
     public abstract String getNewTurnText();
     public abstract Attack getNextAttack();
 
-    public abstract List<DialogAction> onAfterAttack(Attack a);
-    public abstract List<DialogAction> onAttack();
-    public abstract List<DialogAction> onACT(String option);
+
+    public abstract List<Action> onPreAttack();
+    public abstract List<Action> onAttack();
+    public abstract List<Action> onACT(String option);
+    public abstract List<Action> onAfterAttack(Attack a);
 
     public abstract String[] getACT();
 
@@ -103,6 +105,7 @@ public abstract class Mob {
 
     public abstract BufferedImage getHitImage();
 
+    public abstract void setAnimation(Animation animation);
     public abstract void setImage(BufferedImage image);
 
     public abstract String getMusic();
