@@ -5,7 +5,6 @@ import ryan.shavell.main.core.player.PlayerInfo;
 import ryan.shavell.main.core.player.Weapon;
 import ryan.shavell.main.dialogue.ChatBox;
 import ryan.shavell.main.dialogue.actions.ActionDialog;
-import ryan.shavell.main.dialogue.actions.ActionStartAttack;
 import ryan.shavell.main.dialogue.actions.Action;
 import ryan.shavell.main.dialogue.actions.ActionTriggerPreAttack;
 import ryan.shavell.main.logic.InputTaker;
@@ -70,6 +69,7 @@ public class Arena implements InputTaker, Drawable {
     public List<Action> actions = new ArrayList<>();
 
     public boolean mobTurn = false;
+    public int turn = 0;
 
     private String[] oldOptions = null;
 
@@ -254,10 +254,10 @@ public class Arena implements InputTaker, Drawable {
             //System.out.println("PROCESSING ACTION");
             if (!current.hasRun()) {
                 current.run();
-                System.out.println("Ran action");
+                //System.out.println("Ran action");
             }
             if (current.isDone()) {
-                System.out.println("Action complete");
+                //System.out.println("Action complete");
                 actions.remove(current);
             }
         }
@@ -297,11 +297,6 @@ public class Arena implements InputTaker, Drawable {
             mobTurn = false;
             actions.clear();
             actions = mob.onAfterAttack(battleBox.getAttack());
-            /*
-            freezeMenu = false;
-            dialogBox.setText(mob.getNewTurnText());
-            selected = 0;
-            */
         }
 
         oldDidTarget = didTarget;
@@ -315,7 +310,7 @@ public class Arena implements InputTaker, Drawable {
             mobMusic = music;
         } else {
             mobMusic = null;
-            //TODO: if it wasn't null before, stop the existing music (if there is any)
+            //TODO: if it wasn't null before, stop the existing music
         }
 
         dialogBox.tick();
@@ -328,6 +323,7 @@ public class Arena implements InputTaker, Drawable {
         selected = -1;
         freezeMenu = true;
         dialogBox.setText("");
+        turn++;
         Attack a = mob.getNextAttack();
         battleBox.setAttack(a);
         battleBox.doResizeAnimation(575, 140, a.getWidth(), a.getHeight());
@@ -408,7 +404,7 @@ public class Arena implements InputTaker, Drawable {
                     PlayerInfo.weapon.drawEffect(centerX, mob.getY(), g);
                 } else {
                     damageAnim = true;
-                    System.out.println("Animation done");
+                    //System.out.println("Animation done");
                 }
             } else if (dealtDamage) {
                 //TODO: Animate the health bar going down
@@ -446,9 +442,23 @@ public class Arena implements InputTaker, Drawable {
                 g.setColor(UnderColor.GRAY);
                 g.fillRect(hBarX + 1, hBarY + 1, hBarWidth - 2, hBarHeight - 2);
 
-                int fillAmount = (int) Math.round((hBarWidth - 2.0) * mob.getHealthPercent());
-                g.setColor(UnderColor.GREEN);
-                g.fillRect(hBarX + 1, hBarY + 1, fillAmount, hBarHeight - 2);
+                double fillAmount = (hBarWidth - 2.0) * mob.getHealthPercent();
+
+                //TODO: instead of hBarWidth - 2, use the previous health bar size
+                double diff = (hBarWidth - 2.0) - fillAmount;
+
+                double rateOfchange = diff / 14.0; //TODO: turn this number into a tuning intenger
+
+                if (currentHPBarWidth == -1) currentHPBarWidth = hBarWidth - 2;
+                //else {
+                    currentHPBarWidth -= rateOfchange;
+                    if (currentHPBarWidth < fillAmount) currentHPBarWidth = fillAmount;
+                //}
+
+                int renderSize = (int) Math.round(currentHPBarWidth);
+
+                        g.setColor(UnderColor.GREEN);
+                g.fillRect(hBarX + 1, hBarY + 1, renderSize, hBarHeight - 2);
 
                 g.setColor(UnderColor.RED);
                 g.setFont(Main.BATTLE_NUMBERS);
@@ -471,6 +481,8 @@ public class Arena implements InputTaker, Drawable {
             }
         }
     }
+
+    private double currentHPBarWidth = -1;
 
     public void drawPlayerInfo(Graphics2D g) {
         g.setColor(Color.WHITE);

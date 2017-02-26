@@ -1,6 +1,7 @@
 package ryan.shavell.main.core;
 
 import ryan.shavell.main.render.Board;
+import ryan.shavell.main.resources.AudioHandler;
 import ryan.shavell.main.stuff.Input;
 import javax.swing.*;
 import java.awt.*;
@@ -14,6 +15,8 @@ public class Main extends JFrame {
     public static Font MENU, DIALOGUE, SQUISH_MENU, BATTLE_DIALOG, BATTLE_NUMBERS;
 
     public static final int WIDTH = 640, HEIGHT = 480;
+
+    private static Thread audioThread;
 
     public Main() {
         try {
@@ -34,6 +37,16 @@ public class Main extends JFrame {
         setResizable(false);
         setTitle("OPENTALE");
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+        audioThread = new Thread(()-> {
+            while (true) {
+                AudioHandler.tick();
+                try {
+                    Thread.sleep(25);
+                } catch (Exception e) {
+                }
+            }
+        });
+        audioThread.start();
         //AudioHandler.play("Home", true);
 
         setVisible(true);
