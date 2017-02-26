@@ -8,6 +8,7 @@ public class Animation {
     private BufferedImage[] images;
     private boolean loop = true;
 
+    private boolean paused = false;
     private boolean done = false;
     private int currentFrame = 0;
     private int ticksSinceLastChange = 0;
@@ -27,6 +28,7 @@ public class Animation {
         currentFrame = 0;
         ticksSinceLastChange = 0;
         done = false;
+        paused = false;
     }
 
     public void setCurrentFrame(int frame) {
@@ -37,22 +39,30 @@ public class Animation {
         return currentFrame;
     }
 
+    public void setPaused(boolean paused) {
+        this.paused = paused;
+    }
+
     public BufferedImage getImage() {
-        if (ticksSinceLastChange == ticksPerFrame) {
-            ticksSinceLastChange = 0;
-            currentFrame++;
+        if (paused) {
+            return getImageWithoutIncrement();
         } else {
-            ticksSinceLastChange++;
-        }
-        if (currentFrame == images.length) {
-            if (loop) {
-                currentFrame = 0;
+            if (ticksSinceLastChange == ticksPerFrame) {
+                ticksSinceLastChange = 0;
+                currentFrame++;
             } else {
-                currentFrame--;
-                done = true;
+                ticksSinceLastChange++;
             }
+            if (currentFrame == images.length) {
+                if (loop) {
+                    currentFrame = 0;
+                } else {
+                    currentFrame--;
+                    done = true;
+                }
+            }
+            return images[currentFrame];
         }
-        return images[currentFrame];
     }
 
     public BufferedImage getImageWithoutIncrement() {

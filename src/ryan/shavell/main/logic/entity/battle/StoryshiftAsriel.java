@@ -105,13 +105,13 @@ public class StoryshiftAsriel extends Mob {
         List<Action> actions = new ArrayList<>();
         if (a instanceof TestAttack2 && !didFlirt) {
             starstruck = true;
-            actions.add(new ActionImageChange(talk0));
-            actions.add(new ActionTalk("Did you honestly think that my strongest attack...", "asriel_text"));
-            actions.add(new ActionTalk("Would be so predictable?", "asriel_text"));
-            actions.add(new ActionTalk("This isn't some lousy little bullet!", "asriel_text"));
-            actions.add(new ActionImageChange(talk4));
-            actions.add(new ActionTalk("This is the stuff of legends!!", "asriel_text"));
-            actions.add(new ActionTalk("Hah hah hah hah!!", "asriel_text"));
+            //actions.add(new ActionImageChange(talk0));
+            actions.add(new ActionTalk("Did you honestly think that my strongest attack...", "asriel_text", talk0, 0));
+            actions.add(new ActionTalk("Would be so predictable?", "asriel_text", talk0, 0));
+            actions.add(new ActionTalk("This isn't some lousy little bullet!", "asriel_text", talk0, 0));
+            //actions.add(new ActionImageChange(talk4));
+            actions.add(new ActionTalk("This is the stuff of legends!!", "asriel_text", talk4, 0));
+            actions.add(new ActionTalk("Hah hah hah hah!!", "asriel_text", talk4, 0));
             actions.add(new ActionImageChange(sheet.getImage(0, 0)));
         }
         actions.add(new ActionPlayerTurn());
@@ -136,42 +136,44 @@ public class StoryshiftAsriel extends Mob {
         List<Action> actions = new ArrayList<>();
         if (option.equals("Flirt")) {
             if (!didFlirt) {
-                actions.add(new ActionImageChange(talk1));
-                actions.add(new ActionTalk("Wh-whoa, what?", "asriel_text"));
-                actions.add(new ActionTalk("Are you...", "asriel_text"));
-                actions.add(new ActionImageChange(talk2));
-                actions.add(new ActionTalk("Are you kidding me?! This is a fight!", "asriel_text"));
-                actions.add(new ActionImageChange(talk3));
-                actions.add(new ActionTalk("Does this look like some joke to you?", "asriel_text"));
+
+                //actions.add(new ActionImageChange(talk1));
+                actions.add(new ActionTalk("Wh-whoa, what?", "asriel_text", talk1, 0));
+                actions.add(new ActionTalk("Are you...", "asriel_text", talk1, 0));
+                //actions.add(new ActionImageChange(talk2));
+                actions.add(new ActionTalk("Are you kidding me?! This is a fight!", "asriel_text", talk2, 0));
+                //actions.add(new ActionImageChange(talk3));
+                actions.add(new ActionTalk("Does this look like some joke to you?", "asriel_text", talk3, 0));
                 actions.add(new ActionImageChange(sheet.getImage(3, 0)));
 
                 List<Action> flirtyOption = new ArrayList<>();
                 List<Action> notFlirtyOption = new ArrayList<>();
 
-                flirtyOption.add(new ActionImageChange(talk1));
-                flirtyOption.add(new ActionTalk("Hah hah...", "asriel_text"));
-                flirtyOption.add(new ActionImageChange(talk2));
-                flirtyOption.add(new ActionTalk("Lets talk about this after the fight!", "asriel_text"));
+                //flirtyOption.add(new ActionImageChange(talk1));
+                flirtyOption.add(new ActionTalk("Hah hah...", "asriel_text", talk1, 0));
+                //flirtyOption.add(new ActionImageChange(talk2));
+                flirtyOption.add(new ActionTalk("Lets talk about this after the fight!", "asriel_text", talk2, 0));
 
-                notFlirtyOption.add(new ActionImageChange(talk4));
-                notFlirtyOption.add(new ActionTalk("That's what I thought!", "asriel_text"));
+                //..,notFlirtyOption.add(new ActionImageChange(talk4));
+                notFlirtyOption.add(new ActionTalk("That's what I thought!", "asriel_text", talk4, 0));
 
                 List<Action>[] paths = new List[]{flirtyOption, notFlirtyOption};
 
                 actions.add(new ActionDialogOption(paths, "I'm serious about you!", "I'm serious about the fight!"));
 
-                actions.add(new ActionImageChange(talk0));
-                actions.add(new ActionTalk("So you won't fight me?", "asriel_text"));
-                actions.add(new ActionImageChange(talk4));
-                actions.add(new ActionTalk("Heh, I don't blame you.", "asriel_text"));
-                actions.add(new ActionTalk("Let's see how you handle my fabled STAR BLAZING.", "asriel_text"));
-                actions.add(new ActionTalk("Behold!", "asriel_text"));
+                //actions.add(new ActionImageChange(talk0));
+                actions.add(new ActionTalk("So you won't fight me?", "asriel_text", talk0, 0));
+                //actions.add(new ActionImageChange(talk4));
+                actions.add(new ActionTalk("Heh, I don't blame you.", "asriel_text", talk4, 0));
+                actions.add(new ActionTalk("Let's see how you handle my fabled STAR BLAZING.", "asriel_text", talk4, 0));
+                actions.add(new ActionTalk("Behold!", "asriel_text", talk4, 0));
                 actions.add(new ActionImageChange(sheet.getImage(0, 0)));
             } else {
                 actions.add(new ActionDialog("* Asriel is too distracted to flirt. Seems like ACTing won't escalate this battle."));
             }
         } else if (option.equals("Insult")) {
-
+            if (didFlirt)
+            actions.add(new ActionDialog("* Asriel is too busy with his speech to pay attention to what you're saying."));
         }
         actions.add(new ActionTriggerPreAttack());
         lastAction = option;

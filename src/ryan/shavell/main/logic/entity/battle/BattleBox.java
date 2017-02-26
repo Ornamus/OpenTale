@@ -17,12 +17,13 @@ import java.awt.image.BufferedImage;
 //TODO: center y instead of having it be from the top (small y attacks look offset right now)
 //TODO: is pre-programmed/constructor-passed x and y redundant now, since resizing and recalculatingBounds throws those values that out the window?
 //TODO: resize box and show heart while pre-attack mob dialog is happening
+//TODO: Figure out why holding Z makes blue hearts have input lag
 
 /**
- * Contains all the logic and variables for handling monster attacks and SOUl-related movement.
+ * Contains all the logic and variables for handling monster attacks and SOUL stuff.
  *
  * @author Ornamus
- * @version 2017.2.16
+ * @version 2017.2.26
  */
 public class BattleBox implements Drawable, InputTaker {
 

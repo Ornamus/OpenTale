@@ -1,11 +1,8 @@
 package ryan.shavell.main.dialogue.actions;
 
-import ryan.shavell.main.dialogue.ConsumerAndSupplier;
-
 import java.util.function.BooleanSupplier;
-import java.util.function.Consumer;
 
-public class Action {
+public abstract class Action {
 
     private Runnable runnable;
     private BooleanSupplier done;

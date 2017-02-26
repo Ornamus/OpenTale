@@ -4,6 +4,7 @@ import ryan.shavell.main.dialogue.DialogBox;
 import ryan.shavell.main.logic.entity.battle.Arena;
 import ryan.shavell.main.logic.entity.battle.StoryshiftAsriel;
 import ryan.shavell.main.logic.entity.battle.TestMob;
+import ryan.shavell.main.resources.AudioHandler;
 
 import javax.swing.*;
 import java.awt.*;

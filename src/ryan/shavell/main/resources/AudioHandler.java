@@ -4,63 +4,66 @@ import javax.sound.sampled.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class AudioHandler implements Runnable, LineListener {
+//TODO: change how this works so there is no synchronization calls being made on the main game logic thread (in/out buffer lists :) )
+
+public class AudioHandler implements LineListener {
 
     private static List<AudioHandler> handlers = new ArrayList<>();
+    private static Object HANDLERS_USE = new Object();
 
     private String audioFileName;
-    private boolean loop, playCompleted;
+    private boolean loop = false, playCompleted = false;
+    private Clip audioClip = null;
 
     //TODO: Function to stop all/certain tracks already playing
 
-    private AudioHandler(String audioFileName, boolean loop) {
-        this.audioFileName = audioFileName;
+    private AudioHandler(String audioName, boolean loop) {
+        this.audioFileName = audioName;
         this.loop = loop;
-        Thread t = new Thread(this);
-        t.start();
+
+        play();
+        //if (this.loop) System.out.println("A looping sound has been started!");
     }
 
-    @Override
-    public void run() {
-        boolean didAtAll = false;
-        while (loop || !didAtAll) {
-            try {
-                AudioInputStream audioStream = AudioSystem.getAudioInputStream(AudioHandler.class.getResource(audioFileName + ".wav"));
-                AudioFormat format = audioStream.getFormat();
+    public void play() {
+        try {
+            playCompleted = false;
 
-                DataLine.Info info = new DataLine.Info(Clip.class, format);
+            AudioInputStream audioStream = AudioSystem.getAudioInputStream(AudioHandler.class.getResource(audioFileName + ".wav"));
+            AudioFormat format = audioStream.getFormat();
 
-                //TODO: lower music more than other game audio
+            DataLine.Info info = new DataLine.Info(Clip.class, format);
 
-                Clip audioClip = (Clip) AudioSystem.getLine(info);
+            //TODO: lower music more than other game audio
 
-                audioClip.addLineListener(this);
+            audioClip = (Clip) AudioSystem.getLine(info);
 
-                audioClip.open(audioStream);
+            audioClip.addLineListener(this);
 
-                FloatControl gainControl =
-                        (FloatControl) audioClip.getControl(FloatControl.Type.MASTER_GAIN);
-                gainControl.setValue(-20.0f); // Reduce volume by 20 decibels.
+            audioClip.open(audioStream);
 
-                playCompleted = false;
-                audioClip.start();
+            FloatControl gainControl =
+                    (FloatControl) audioClip.getControl(FloatControl.Type.MASTER_GAIN);
+            gainControl.setValue(-20.0f); // Reduce volume by 20 decibels.
 
-                while (!playCompleted) {
-                    // wait for the playback completes
-                    try {
-                        Thread.sleep(1000);
-                    } catch (InterruptedException ex) {
-                        ex.printStackTrace();
+            audioClip.start();
+        } catch (Exception e) {
+            System.out.println("[ERROR] AudioHandler.play() exception!");
+            e.printStackTrace();
+        }
+    }
+
+    public static void tick() {
+        for (AudioHandler a : new ArrayList<>(handlers)) {
+            if (a.playCompleted) {
+                a.audioClip.close();
+                if (a.loop) {
+                    a.play();
+                } else {
+                    synchronized (HANDLERS_USE) {
+                        handlers.remove(a);
                     }
                 }
-
-                audioClip.close();
-                didAtAll = true;
-
-
-            } catch (Exception ex) {
-                System.out.println("[ERROR] AudioHandler exception!");
-                ex.printStackTrace();
             }
         }
     }
@@ -89,7 +92,9 @@ public class AudioHandler implements Runnable, LineListener {
      * @param loop If the song should loop.
      */
     public static void playSong(String audioFileName, boolean loop) {
-        handlers.add(new AudioHandler("music/" + audioFileName, loop));
+        synchronized (HANDLERS_USE) {
+            handlers.add(new AudioHandler("music/" + audioFileName, loop));
+        }
     }
 
     /**
@@ -98,6 +103,8 @@ public class AudioHandler implements Runnable, LineListener {
      * @param audioFileName Name of the audio file.
      */
     public static void playEffect(String audioFileName) {
-        handlers.add(new AudioHandler("sound_effects/" + audioFileName, false));
+        synchronized (HANDLERS_USE) {
+            handlers.add(new AudioHandler("sound_effects/" + audioFileName, false));
+        }
     }
 }
