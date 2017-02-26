@@ -7,6 +7,8 @@ import ryan.shavell.main.resources.Animation;
 import java.awt.image.BufferedImage;
 import java.util.List;
 
+//TODO: implement lastAction here
+
 public abstract class Mob {
 
     private int y;
@@ -97,6 +99,7 @@ public abstract class Mob {
     public abstract List<Action> onPreAttack();
     public abstract List<Action> onAttack();
     public abstract List<Action> onACT(String option);
+    public abstract List<Action> onSPARE();
     public abstract List<Action> onAfterAttack(Attack a);
 
     public abstract String[] getACT();

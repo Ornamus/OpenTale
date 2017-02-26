@@ -2,13 +2,18 @@ package ryan.shavell.main.dialogue;
 
 import ryan.shavell.main.core.Main;
 import ryan.shavell.main.logic.InputTaker;
-import ryan.shavell.main.logic.SoulType;
 import ryan.shavell.main.logic.entity.battle.Arena;
 import ryan.shavell.main.render.Drawable;
 import ryan.shavell.main.resources.AudioHandler;
 import java.awt.*;
 import java.awt.event.KeyEvent;
 
+/**
+ * Displays text and options within a chat box. Uses ScrollText for all fancy text things.
+ *
+ * @author Ornamus
+ * @version 2017.2.26
+ */
 public class DialogBox implements Drawable, InputTaker {
 
     //private static final int x = 33;
@@ -27,8 +32,6 @@ public class DialogBox implements Drawable, InputTaker {
     private String lastText = null;
 
     private boolean isOptions, blocking, skippable, shouldMoveOn;
-
-    //TODO: more getters and setters, so that further implementations (like ChatBox) can actually work
 
     public DialogBox(int y) {
         this(33, y);
@@ -68,6 +71,12 @@ public class DialogBox implements Drawable, InputTaker {
         //setVisuals(Color.WHITE, Main.DIALOGUE);
     }
 
+    /**
+     * Sets what the text in this DialogBox looks like.
+     *
+     * @param c The Color of the text.
+     * @param f The Font of the text.
+     */
     public void setVisuals(Color c, Font f) {
         text.setVisuals(c, f);
         optionOne.setVisuals(c, f);
@@ -76,6 +85,9 @@ public class DialogBox implements Drawable, InputTaker {
         optionFour.setVisuals(c, f);
     }
 
+    /**
+     * Sets all relevant variables and Objects back to their defaults.
+     */
     private void setDefaults() {
         isOptions = false;
         blocking = false;
@@ -93,6 +105,12 @@ public class DialogBox implements Drawable, InputTaker {
         optionFour.setText("", ScrollText.SCROLL_INSTANT);
     }
 
+    /**
+     * Sets what options are available for the player to select in this DialogBox.
+     * The primary text does not render while options are being shown.
+     *
+     * @param options The options.
+     */
     public void setOptions(String... options) {
         setDefaults();
         this.options = options;
@@ -111,17 +129,35 @@ public class DialogBox implements Drawable, InputTaker {
         optionSelected = 0;
     }
 
+    /**
+     * Sets the primary text that is displayed in this DialogBox. Options will not render while this
+     * text is being shown.
+     *
+     * @param string The text.
+     */
     public void setText(String string) {
         setDefaults();
         text.setText(string, ScrollText.SCROLL_NORMAL);
         lastText = string;
     }
 
+    /**
+     * Sets the primary text that is displayed in this DialogBox. Options will not render while this
+     * text is being shown.
+     *
+     * @param string The text.
+     * @param blocking If this text should block key input.
+     */
     public void setText(String string, boolean blocking) {
         setText(string);
         this.blocking = blocking;
     }
 
+    /**
+     * Gets the current primary text being displayed.
+     *
+     * @return The current primary text being displayed. Will be null if options are currently being displayed.
+     */
     public String getText() {
         if (isOptions) {
             return null;
@@ -138,6 +174,11 @@ public class DialogBox implements Drawable, InputTaker {
         return lastText;
     }
 
+    /**
+     * Gets if this text is currently playing the text scrolling animation.
+     *
+     * @return If this text is currently playing the text scrolling animation.
+     */
     public boolean isScrolling() {
         return text.isScrolling();
     }
@@ -146,6 +187,12 @@ public class DialogBox implements Drawable, InputTaker {
         return blocking;
     }
 
+    /**
+     * Gets if this DialogBox is ready to "move on." This means the box is either done displaying it's text
+     * or an option has been selected.
+     *
+     * @return If this DialogBox is ready to "move on."
+     */
     public boolean shouldMoveOn() {
         String text = getText();
         return shouldMoveOn || (text != null && text.equals(""));
@@ -219,6 +266,11 @@ public class DialogBox implements Drawable, InputTaker {
         optionFour.tick();
     }
 
+    /**
+     * Draws the background of this DialogBox. Typically just a black box with a white border.
+     *
+     * @param g The Graphics2D object this will be drawn on.
+     */
     public void drawBackground(Graphics2D g) {
         g.setColor(Color.BLACK);
         g.fillRect(x, y, dialogWidth, dialogHeight);

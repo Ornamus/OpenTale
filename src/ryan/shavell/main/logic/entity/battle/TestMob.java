@@ -117,6 +117,16 @@ public class TestMob extends Mob {
     }
 
     @Override
+    public List<Action> onSPARE() {
+        List<Action> actions = new ArrayList<>();
+
+        //TODO
+
+        actions.add(new ActionTriggerPreAttack());
+        return actions;
+    }
+
+    @Override
     public String getCheckInfo() {
         lastAction = "CHECK";
         return super.getCheckInfo() + "/n* Puts on a brave face, but gets emotional very easily.";

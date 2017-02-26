@@ -179,6 +179,16 @@ public class StoryshiftAsriel extends Mob {
     }
 
     @Override
+    public List<Action> onSPARE() {
+        List<Action> actions = new ArrayList<>();
+
+        //TODO
+
+        actions.add(new ActionTriggerPreAttack());
+        return actions;
+    }
+
+    @Override
     public String[] getACT() {
         return new String[]{"Insult", "Flirt"};
     }

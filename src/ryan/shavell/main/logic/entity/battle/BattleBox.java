@@ -18,6 +18,12 @@ import java.awt.image.BufferedImage;
 //TODO: is pre-programmed/constructor-passed x and y redundant now, since resizing and recalculatingBounds throws those values that out the window?
 //TODO: resize box and show heart while pre-attack mob dialog is happening
 
+/**
+ * Contains all the logic and variables for handling monster attacks and SOUl-related movement.
+ *
+ * @author Ornamus
+ * @version 2017.2.16
+ */
 public class BattleBox implements Drawable, InputTaker {
 
     private static final int SOUL_SPEED = 3;

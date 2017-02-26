@@ -6,7 +6,10 @@ import ryan.shavell.main.resources.SpriteSheet;
 import java.awt.image.BufferedImage;
 
 /**
- * Created by Ryan Shavell on 2/19/2017.
+ * Contains data for SoulTypes.
+ *
+ * @author Ornamus
+ * @version 2017.2.26
  */
 public enum SoulType {
     NORMAL(0, 0),

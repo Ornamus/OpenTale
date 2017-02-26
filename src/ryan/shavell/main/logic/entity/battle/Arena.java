@@ -88,7 +88,7 @@ public class Arena implements InputTaker, Drawable {
             background = ImageLoader.getImage("battle_background_boss");
         }
 
-        buttons = new SpriteSheet(110, 42, 2, 4, "battle_buttons");
+        buttons = new SpriteSheet(110, 42, 2, 4, "ss_battle_buttons");
         soulType = SoulType.NORMAL;
 
         dialogBox = new DialogBox(251);
