@@ -3,42 +3,48 @@ package ryan.shavell.main.logic.entity.battle.attacks;
 import ryan.shavell.main.render.Drawable;
 import ryan.shavell.main.resources.Animation;
 import ryan.shavell.main.resources.ImageLoader;
+import ryan.shavell.main.stuff.Utils;
+
 import java.awt.*;
 import java.awt.image.BufferedImage;
 
 public class Projectile implements Drawable {
 
-    private double x, y;
+    protected double x, y;
     private double angle = 0;
+
+    protected double oldX, oldY;
 
     protected int hitbox_niceness = 1;
 
-    protected double drawAngle = 0;
+    //protected double drawAngle = 0;
     protected Animation animation;
     protected BufferedImage frame = null;
 
     protected double moveSpeed = 2;
     protected boolean rotateToAngle = false;
 
+    protected boolean movingAtAngle = false;
+
     private int damage = 3;
 
     protected Rectangle hitbox = null;
 
-    public Projectile(int x, int y, double angleOfMovement, String img) {
-        this(x, y, angleOfMovement, ImageLoader.getImage(img));
+    public Projectile(int x, int y, String img) {
+        this(x, y, ImageLoader.getImage(img));
     }
 
-    public Projectile(int x, int y, double angleOfMovement, BufferedImage img) {
+    public Projectile(int x, int y, BufferedImage img) {
         this.x = x;
         this.y = y;
-        angle = angleOfMovement;
+        oldX = x;
+        oldY = y;
         if (img != null) animation = new Animation(0, img);
     }
 
-    public Projectile(int x, int y, double angleOfMovement, Animation a) {
+    public Projectile(int x, int y, Animation a) {
         this.x = x;
         this.y = y;
-        angle = angleOfMovement;
         if (a != null) animation = a;
     }
 
@@ -47,15 +53,21 @@ public class Projectile implements Drawable {
         return this;
     }
 
+    public Projectile moveAtAngle(double angle) {
+        this.angle = angle;
+        movingAtAngle = true;
+        rotateToAngle = true;
+        return this;
+    }
+
     @Override
     public void tick() {
-        double oldX = x;
-        double oldY = y;
-        double rad = Math.toRadians(angle);
-        x += Math.sin(rad) * moveSpeed;
-        y += Math.cos(rad) * moveSpeed;
-        if (oldX != x || oldY != y) {
-            hitbox = null;
+        oldX = x;
+        oldY = y;
+        if (movingAtAngle) {
+            double rad = Math.toRadians(angle);
+            x += Math.sin(rad) * moveSpeed;
+            y += Math.cos(rad) * moveSpeed;
         }
     }
 
@@ -76,14 +88,14 @@ public class Projectile implements Drawable {
     }
 
     public Rectangle getHitbox() {
-        if (hitbox == null) {
-            if (rotateToAngle) {
-                //TODO
-            } else {
+        if (hitbox == null || (oldX != x || oldY != y)) {
+            //if (rotateToAngle) {
+
+            //} else {
                 if (frame != null) {
                     hitbox = new Rectangle(getXRound() + hitbox_niceness, getYRound() + hitbox_niceness, frame.getWidth() - (hitbox_niceness * 2), frame.getHeight() - (hitbox_niceness * 2));
                 }
-            }
+            //}
         }
         return hitbox;
     }
@@ -94,11 +106,11 @@ public class Projectile implements Drawable {
 
     @Override
     public void draw(Graphics2D g) {
-        if (rotateToAngle) {
-            //TODO
-        } else {
-            frame = animation.getImage();
+        frame = animation.getImage();
+        //if (rotateToAngle) {
+            //g.drawImage(Utils.rotate(frame, angle), getXRound(), getYRound(), null);
+        //} else {
             g.drawImage(frame, getXRound(), getYRound(), null);
-        }
+        //}
     }
 }

@@ -2,6 +2,7 @@ package ryan.shavell.main.logic.entity.battle.attacks;
 
 import ryan.shavell.main.stuff.Utils;
 
+//Lazy random stars
 public class TestAttack extends Attack {
 
     public TestAttack() {

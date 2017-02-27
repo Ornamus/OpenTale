@@ -119,7 +119,7 @@ public class ScrollText implements Drawable {
             //if (!text.equals("")) System.out.println("Calculating breaks for \"" + text + "\".");
             String textCopy = text;
             breaks = new ArrayList<>();
-            while ((widthLimit != -1 && (g.getFontMetrics().stringWidth(textCopy) > widthLimit)) || textCopy.contains("\n")) {
+            while ((widthLimit != -1 && (g.getFontMetrics().stringWidth(textCopy) > widthLimit)) || textCopy.contains("/n")) {
                 int indexOfBreakable = -1;
                 boolean newLine = false;
                 for (int i=0; i<textCopy.length(); i++) {

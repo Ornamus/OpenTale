@@ -37,16 +37,8 @@ public class Main extends JFrame {
         setResizable(false);
         setTitle("OPENTALE");
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-        audioThread = new Thread(()-> {
-            while (true) {
-                AudioHandler.tick();
-                try {
-                    Thread.sleep(25);
-                } catch (Exception e) {
-                }
-            }
-        });
-        audioThread.start();
+
+        AudioHandler.init();
         //AudioHandler.play("Home", true);
 
         setVisible(true);

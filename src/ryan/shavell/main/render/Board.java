@@ -4,6 +4,7 @@ import ryan.shavell.main.dialogue.DialogBox;
 import ryan.shavell.main.logic.entity.battle.Arena;
 import ryan.shavell.main.logic.entity.battle.StoryshiftAsriel;
 import ryan.shavell.main.logic.entity.battle.TestMob;
+import ryan.shavell.main.logic.entity.battle.Volty;
 import ryan.shavell.main.resources.AudioHandler;
 
 import javax.swing.*;
@@ -30,7 +31,8 @@ public class Board extends JPanel implements ActionListener {
         drawables.add(new OverworldEntity(100, 100, "sans_temp"));
         drawables.add(new OverworldPlayer(200, 200));
         */
-        drawables.add(new Arena(new StoryshiftAsriel()));
+        //drawables.add(new Arena(new StoryshiftAsriel()));
+        drawables.add(new Arena(new Volty(135)));
         t = new Timer(25, this);
         t.start();
         start = System.currentTimeMillis();

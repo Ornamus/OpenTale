@@ -9,7 +9,8 @@ public class ProjectileStar extends Projectile {
     private boolean spinLeft;
 
     public ProjectileStar(int x, int y, double angleOfMovement) {
-        super(x, y, angleOfMovement, "attacks/star");
+        super(x, y, "attacks/star");
+        moveAtAngle(angleOfMovement);
         spinLeft = Utils.randomNumber(0, 1) == 0;
     }
 

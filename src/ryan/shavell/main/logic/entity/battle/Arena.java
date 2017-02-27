@@ -4,6 +4,7 @@ import ryan.shavell.main.core.Main;
 import ryan.shavell.main.core.player.PlayerInfo;
 import ryan.shavell.main.core.player.Weapon;
 import ryan.shavell.main.dialogue.ChatBox;
+import ryan.shavell.main.dialogue.actions.ActionCrash;
 import ryan.shavell.main.dialogue.actions.ActionDialog;
 import ryan.shavell.main.dialogue.actions.Action;
 import ryan.shavell.main.dialogue.actions.ActionTriggerPreAttack;
@@ -69,7 +70,7 @@ public class Arena implements InputTaker, Drawable {
     public List<Action> actions = new ArrayList<>();
 
     public boolean mobTurn = false;
-    public int turn = 0;
+    private static int turn = 0;
 
     private String[] oldOptions = null;
 
@@ -100,7 +101,7 @@ public class Arena implements InputTaker, Drawable {
         fightGUI = ImageLoader.getImage("fight_gui");
         battlePointer = new SpriteSheet(14, 128, 2, 1, "battle_target");
 
-        dialogBox.setText("* Asriel takes a stand!");
+        dialogBox.setText("* ......?");
         //dialogBox.setText("* You feel like you're going to have a bad time.");
     }
 
@@ -114,6 +115,7 @@ public class Arena implements InputTaker, Drawable {
         battleTargeterX = dialogBox.getX() + 5;
         damageShakeTargetX = 0;
         adjustAmount = 15;
+        firstHPRecalculate = true;
         timeSinceLastAdjust = null;
     }
 
@@ -149,7 +151,10 @@ public class Arena implements InputTaker, Drawable {
             if (option == 0) { //Spare
                 //TODO: spare
             } else { //Flee
-                dialogBox.setText("I'm outta here...", true);
+                actions.clear();
+                actions.add(new ActionDialog("* I'm outta here..."));
+                actions.add(new ActionCrash());
+                //dialogBox.setText("I'm outta here...", true);
                 subMenu = -1;
                 selected = -1;
             }
@@ -395,6 +400,10 @@ public class Arena implements InputTaker, Drawable {
             */
         }
 
+        g.setFont(Main.MENU);
+        g.setColor(Color.WHITE);
+        //g.drawString("Turn = " + turn, 20, 20);
+
         if (doingAttack) {
             g.drawImage(fightGUI, dialogBox.getX() + 15, dialogBox.getY() + 14, null);
             g.drawImage(battlePointer.getImage(didTarget ? 1 : 0, 0), battleTargeterX, dialogBox.getY() + 6, null);
@@ -434,6 +443,12 @@ public class Arena implements InputTaker, Drawable {
                 g.drawImage(mobImage, renderX, mob.getY(), width, height, null);
 
                 int hBarWidth = 103, hBarHeight = 15;
+
+                //TODO: deal with this
+                if (mob.isBoss()) {
+                    hBarWidth *= 1.50;
+                }
+
                 int hBarX = centerX - (hBarWidth / 2), hBarY = mob.getY() - 25;
 
                 g.setColor(Color.black);
@@ -442,22 +457,23 @@ public class Arena implements InputTaker, Drawable {
                 g.setColor(UnderColor.GRAY);
                 g.fillRect(hBarX + 1, hBarY + 1, hBarWidth - 2, hBarHeight - 2);
 
-                double fillAmount = (hBarWidth - 2.0) * mob.getHealthPercent();
-
-                //TODO: instead of hBarWidth - 2, use the previous health bar size
-                double diff = (hBarWidth - 2.0) - fillAmount;
-
-                double rateOfchange = diff / 14.0; //TODO: turn this number into a tuning intenger
-
                 if (currentHPBarWidth == -1) currentHPBarWidth = hBarWidth - 2;
-                //else {
-                    currentHPBarWidth -= rateOfchange;
-                    if (currentHPBarWidth < fillAmount) currentHPBarWidth = fillAmount;
-                //}
+                if (firstHPRecalculate) {
+                    lastHPWidth = currentHPBarWidth;
+                    firstHPRecalculate = false;
+                    //System.out.println("RECALCULATE");
+                }
+
+                double fillAmount = (hBarWidth - 2.0) * mob.getHealthPercent();
+                double diff = lastHPWidth - fillAmount;
+                double rateOfchange = diff / 20.0; //TODO: turn this number into a variable for easy tuning   16
+
+                currentHPBarWidth -= rateOfchange;
+                if (currentHPBarWidth < fillAmount) currentHPBarWidth = fillAmount;
 
                 int renderSize = (int) Math.round(currentHPBarWidth);
 
-                        g.setColor(UnderColor.GREEN);
+                g.setColor(UnderColor.GREEN);
                 g.fillRect(hBarX + 1, hBarY + 1, renderSize, hBarHeight - 2);
 
                 g.setColor(UnderColor.RED);
@@ -471,17 +487,12 @@ public class Arena implements InputTaker, Drawable {
                     g.setColor(Color.WHITE);
                 }
                 g.drawString(damage, centerX - (g.getFontMetrics().stringWidth(damage) / 2), hBarY - 15);
-
-                //TODO: deal with this
-                if (mob.isBoss()) {
-
-                } else {
-
-                }
             }
         }
     }
 
+    private boolean firstHPRecalculate = true;
+    private double lastHPWidth = -1;
     private double currentHPBarWidth = -1;
 
     public void drawPlayerInfo(Graphics2D g) {
@@ -540,6 +551,10 @@ public class Arena implements InputTaker, Drawable {
 
     public static BattleBox getBattleBox() {
         return battleBox;
+    }
+
+    public static int getTurn() {
+        return turn;
     }
 
     public static void setSoulType(SoulType t) {

@@ -44,4 +44,16 @@ public class SpriteSheet {
         }
         return allImages;
     }
+
+    public BufferedImage[] getImageArray() {
+        BufferedImage[] allImages = new BufferedImage[getAllImages().size()];
+        int index = 0;
+        for (BufferedImage[] array : images) {
+            for (BufferedImage i : array) {
+                allImages[index] = i;
+                index++;
+            }
+        }
+        return allImages;
+    }
 }

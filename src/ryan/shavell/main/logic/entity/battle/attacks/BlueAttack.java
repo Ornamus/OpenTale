@@ -25,11 +25,12 @@ public class BlueAttack extends Attack {
         super.tick();
         if (timeOfLastStar == null || System.currentTimeMillis() - timeOfLastStar >= 800) {
             Projectile p = new ProjectileStar(Main.WIDTH - 200, 360, 270);
-            p.setMoveSpeed(3);
+            int speed = 3 + (Arena.getTurn() >= 3 ? Arena.getTurn() / 4 : 0);
+            p.setMoveSpeed(speed);
             spawnProjectile(p);
             if (Utils.randomNumber(0, 3) == 0) {
                 p = new ProjectileStar(Main.WIDTH - 200, 345, 270);
-                p.setMoveSpeed(3);
+                p.setMoveSpeed(speed - (Arena.getTurn() >= 6 ? Utils.randomNumber(0, 2) : 0));
                 spawnProjectile(p);
             }
             timeOfLastStar = System.currentTimeMillis();
