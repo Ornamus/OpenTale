@@ -1,5 +1,6 @@
 package ryan.shavell.main.logic.entity.overworld;
 
+import ryan.shavell.main.logic.InputTaker;
 import ryan.shavell.main.resources.ImageLoader;
 import ryan.shavell.main.render.Drawable;
 import java.awt.*;

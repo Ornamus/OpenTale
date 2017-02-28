@@ -5,6 +5,7 @@ import ryan.shavell.main.logic.entity.battle.Arena;
 import ryan.shavell.main.logic.entity.battle.StoryshiftAsriel;
 import ryan.shavell.main.logic.entity.battle.TestMob;
 import ryan.shavell.main.logic.entity.battle.Volty;
+import ryan.shavell.main.logic.entity.overworld.Overworld;
 import ryan.shavell.main.resources.AudioHandler;
 
 import javax.swing.*;
@@ -17,6 +18,7 @@ import java.util.List;
 public class Board extends JPanel implements ActionListener {
 
     public List<Drawable> drawables = new ArrayList<>();
+    public static DialogBox dialogBox;
     private Timer t;
 
     private double scale;
@@ -26,13 +28,17 @@ public class Board extends JPanel implements ActionListener {
     long start;
     public Board() {
         self = this;
+        dialogBox = new DialogBox(320);
         /*
         drawables.add(new BasicRenderedThing(0, 0, "home"));
         drawables.add(new OverworldEntity(100, 100, "sans_temp"));
         drawables.add(new OverworldPlayer(200, 200));
         */
         //drawables.add(new Arena(new StoryshiftAsriel()));
-        drawables.add(new Arena(new Volty(135)));
+        //drawables.add(new Arena(new Volty(135)));
+
+        drawables.add(new Overworld());
+        drawables.add(dialogBox);
         t = new Timer(25, this);
         t.start();
         start = System.currentTimeMillis();

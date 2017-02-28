@@ -19,11 +19,6 @@ public class ChatBox extends DialogBox {
         setVisuals(Color.BLACK, Main.BATTLE_DIALOG);
     }
 
-    public void setText(String text, String sound) {
-        getMainText().setSound(sound);
-        setText(text);
-    }
-
     @Override
     public void draw(Graphics2D g) {
         if (getText().equals("") || getText() == null) {

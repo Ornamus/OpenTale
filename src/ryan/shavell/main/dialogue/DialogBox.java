@@ -153,6 +153,11 @@ public class DialogBox implements Drawable, InputTaker {
         this.blocking = blocking;
     }
 
+    public void setText(String string, String sound) {
+        text.setSound(sound);
+        setText(string);
+    }
+
     /**
      * Gets the current primary text being displayed.
      *
