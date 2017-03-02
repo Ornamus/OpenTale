@@ -18,7 +18,6 @@ import ryan.shavell.main.resources.AudioHandler;
 import ryan.shavell.main.resources.ImageLoader;
 import ryan.shavell.main.resources.SpriteSheet;
 import ryan.shavell.main.resources.UnderColor;
-
 import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
@@ -28,7 +27,8 @@ import java.util.List;
 
 public class Arena implements InputTaker, Drawable {
 
-    //TODO: code cleanup, prettify
+    //TODO: make mob be rendered relative to battlebox height UNLESS the height is smaller than default
+    //TODO: code cleanup, prettify (look into breaking some logic/variable heavy animations and the like into other classes?)
 
     public static Arena self;
 
@@ -101,8 +101,9 @@ public class Arena implements InputTaker, Drawable {
         fightGUI = ImageLoader.getImage("fight_gui");
         battlePointer = new SpriteSheet(14, 128, 2, 1, "battle_target");
 
-        dialogBox.setText("* ......?");
-        //dialogBox.setText("* You feel like you're going to have a bad time.");
+        //TODO: make Mob provide the starting text
+        //dialogBox.setText("* ......?");
+        dialogBox.setText("* Asriel takes a stand!");
     }
 
     public void resetAttackVariables() {

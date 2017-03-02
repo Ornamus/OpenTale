@@ -14,17 +14,16 @@ import java.awt.event.KeyEvent;
 import java.awt.geom.Line2D;
 import java.awt.image.BufferedImage;
 
-//TODO: center y instead of having it be from the top (small y attacks look offset right now)
+//TODO: figure out if the new y positioning is correct or not (is it always growing from the bottom, or centered until it's too big THEN growing from bottom?
 //TODO: is pre-programmed/constructor-passed x and y redundant now, since resizing and recalculatingBounds throws those values that out the window?
 //TODO: resize box and show heart WHILE pre-attack mob dialog is happening instead of waiting until the dialog is complete
-//TODO: resize box and show heart while pre-attack mob dialog is happening
-//TODO: Figure out why holding Z makes blue hearts have input lag
+//TODO: Figure out why holding Z makes blue hearts have input lag (might not actually be a thing?)
 
 /**
  * Contains all the logic and variables for handling monster attacks and SOUL stuff.
  *
  * @author Ornamus
- * @version 2017.2.26
+ * @version 2017.3.2
  */
 public class BattleBox implements Drawable, InputTaker {
 
@@ -197,9 +196,15 @@ public class BattleBox implements Drawable, InputTaker {
                     currentHeight = endHeight;
                 }
 
+                Point renderCoords = calculateXY(currentWidth, currentHeight);
+
+                renderX = renderCoords.x;
+                renderY = renderCoords.y;
+                /*
                 renderX = (Main.WIDTH / 2) - (currentWidth / 2);
 
-                renderY =  (y - (height / 2)) + (currentHeight / 2);
+                renderY = 391 - currentHeight;
+                */
             }
         }
         boolean notAttacking = (attack == null && System.currentTimeMillis() - startTime >= 500) || (attack != null && attack.isDone());
@@ -216,7 +221,9 @@ public class BattleBox implements Drawable, InputTaker {
     public void doResizeAnimation(int startWidth, int startHeight, int endWidth, int endHeight) {
         width = endWidth;
         height = endHeight;
-        x = (Main.WIDTH / 2) - (width / 2);
+        Point newCoords = calculateXY(width, height);
+        x = newCoords.x;
+        y = newCoords.y;
         //TODO: y
         recalculateBounds();
 
@@ -225,6 +232,12 @@ public class BattleBox implements Drawable, InputTaker {
         this.endWidth = endWidth;
         this.endHeight = endHeight;
         doingResize = true;
+    }
+
+    public Point calculateXY(int cWidth, int cHeight) {
+        int cX = (Main.WIDTH / 2) - (cWidth / 2);
+        int cY = 391 - cHeight;
+        return new Point(cX, cY);
     }
 
     public boolean isResizing() {

@@ -11,6 +11,8 @@ import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 import java.util.List;
 
+//TODO: get dialog actions working here too
+
 public class Overworld implements Drawable, InputTaker {
 
     private List<OverworldEntity> entities = new ArrayList<>();
