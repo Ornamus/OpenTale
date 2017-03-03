@@ -292,7 +292,13 @@ public class ScrollText implements Drawable {
                 }
                 g.setColor(c);
 
-                g.drawString(curr + "", currX, y);
+                int xShift = 0;
+                int yShift = 0;
+
+                if (Utils.randomNumber(0, 600) == 0) xShift = Utils.randomNumber(0, 1) == 0 ? 1 : -1;
+                if (Utils.randomNumber(0, 6A00) == 0) yShift = Utils.randomNumber(0, 1) == 0 ? 1 : -1;
+
+                g.drawString(curr + "", currX + xShift, y + yShift);
                 currX += metrics.stringWidth(curr) + spaceWidth;
             }
         } else {
