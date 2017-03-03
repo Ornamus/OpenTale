@@ -5,8 +5,6 @@ import ryan.shavell.main.resources.Animation;
 import ryan.shavell.main.resources.SpriteSheet;
 import ryan.shavell.main.stuff.Utils;
 
-import java.awt.image.BufferedImage;
-
 /**
  * Created by Ryan Shavell on 2/24/2017.
  */
@@ -35,7 +33,7 @@ public class FireRain extends Attack {
             if (moveSpeed == 4) animSpeed = 2;
             else if (moveSpeed == 3) animSpeed = 3;
             else if (moveSpeed == 2) animSpeed = 4;
-            Animation a = new Animation(animSpeed, fire.getImage(0, 0), fire.getImage(1, 0));
+            Animation a = new Animation(animSpeed, fire.get(0, 0), fire.get(1, 0));
             Projectile p = new Projectile(((Main.WIDTH / 2) - (getWidth() / 2)) + Utils.randomNumber(0, getWidth() - 20) + 10, 250, a);
             p.moveAtAngle(0);
             p.setMoveSpeed(moveSpeed);

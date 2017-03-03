@@ -3,7 +3,7 @@ package ryan.shavell.main.logic.entity.overworld;
 import ryan.shavell.main.logic.InputTaker;
 import ryan.shavell.main.resources.Animation;
 import ryan.shavell.main.resources.SpriteSheet;
-import ryan.shavell.main.stuff.Input;
+
 import java.awt.*;
 import java.awt.event.KeyEvent;
 
@@ -20,13 +20,13 @@ public class OverworldPlayer extends OverworldEntity implements InputTaker {
     private final int moveSpeed = 2;
 
     public OverworldPlayer(int x, int y) {
-        super(x, y, null);
+        super(x, y, "frisk");
         sheet = new SpriteSheet(19, 30, 6, 2, "frisk");
 
-        down = new Animation(ticksPerFrame, sheet.getImage(0, 0), sheet.getImage(1, 0), sheet.getImage(2, 0), sheet.getImage(3, 0));
-        up = new Animation(ticksPerFrame, sheet.getImage(0, 1), sheet.getImage(1, 1), sheet.getImage(2, 1), sheet.getImage(3, 1));
-        left = new Animation(ticksPerFrame, sheet.getImage(4, 0), sheet.getImage(5, 0));
-        right = new Animation(ticksPerFrame, sheet.getImage(4, 1), sheet.getImage(5, 1));
+        up = new Animation(ticksPerFrame, sheet.get(0, 1), sheet.get(1, 1), sheet.get(2, 1), sheet.get(3, 1));
+        down = new Animation(ticksPerFrame, sheet.get(0, 0), sheet.get(1, 0), sheet.get(2, 0), sheet.get(3, 0));
+        left = new Animation(ticksPerFrame, sheet.get(4, 0), sheet.get(5, 0));
+        right = new Animation(ticksPerFrame, sheet.get(4, 1), sheet.get(5, 1));
 
         currentAnimation = down;
     }
@@ -41,33 +41,60 @@ public class OverworldPlayer extends OverworldEntity implements InputTaker {
         g.drawImage(currentAnimation.getImage(), x, y, null);
     }
 
+    int direction = 0;
+
     @Override
     public void tick() {
         super.tick();
         int oldX = x;
         int oldY = y;
         Animation oldAnim = currentAnimation;
-        //TODO: make which animation is chosen be based off of how the X and Y coordinates are changing
-        if (leftHeld) {
-            x -= moveSpeed;
-            currentAnimation = left;
-        }
-        if (rightHeld) {
-            x += moveSpeed;
-            currentAnimation = right;
-        }
-        if (upHeld) {
-            y -= moveSpeed;
-            currentAnimation = up;
-        }
-        if (downHeld) {
-            y += moveSpeed;
-            currentAnimation = down;
+        if (!Overworld.blockPlayerMovement()) {
+            if (leftHeld) {
+                x -= moveSpeed;
+            }
+            if (rightHeld) {
+                x += moveSpeed;
+            }
+            if (upHeld) {
+                y -= moveSpeed;
+            }
+            if (downHeld) {
+                y += moveSpeed;
+            }
         }
 
         boolean newMoving = x != oldX || y != oldY;
-        if (oldAnim != currentAnimation || newMoving != moving) currentAnimation.reset();
+
+        int newDirection = 0;
+        if (x > oldX) newDirection = 1;
+        else if (x < oldX) newDirection = -1;
+
+        boolean redoAnim = newMoving != moving || newDirection != direction;
+        if ((currentAnimation == left && !leftHeld) || (currentAnimation == right && !rightHeld) ||
+                (currentAnimation == up && !upHeld) || (currentAnimation == down && !downHeld)) {
+            redoAnim = true;
+        }
+
+        if (redoAnim && !Overworld.blockPlayerMovement()) {
+            if (leftHeld) {
+                currentAnimation = left;
+            }
+            if (rightHeld) {
+                currentAnimation = right;
+            }
+            if (upHeld) {
+                currentAnimation = up;
+            }
+            if (downHeld) {
+                currentAnimation = down;
+            }
+        }
+
+
+        if ((oldAnim != currentAnimation) || newMoving != moving) currentAnimation.reset();
         moving = newMoving;
+        direction = newDirection;
     }
 
     @Override

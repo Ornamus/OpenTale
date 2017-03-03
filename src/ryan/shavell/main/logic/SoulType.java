@@ -37,10 +37,10 @@ public enum SoulType {
     }
 
     public BufferedImage getImage() {
-        return souls.getImage(x, y);
+        return souls.get(x, y);
     }
 
     public BufferedImage getDamagedImage() {
-        return souls.getImage(x + 1, y);
+        return souls.get(x + 1, y);
     }
 }

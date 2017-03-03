@@ -1,5 +1,6 @@
 package ryan.shavell.main.logic.entity.battle;
 
+import ryan.shavell.main.core.Game;
 import ryan.shavell.main.core.Main;
 import ryan.shavell.main.core.player.PlayerInfo;
 import ryan.shavell.main.core.player.Weapon;
@@ -14,10 +15,8 @@ import ryan.shavell.main.dialogue.DialogBox;
 import ryan.shavell.main.logic.entity.battle.attacks.*;
 import ryan.shavell.main.render.Board;
 import ryan.shavell.main.render.Drawable;
-import ryan.shavell.main.resources.AudioHandler;
-import ryan.shavell.main.resources.ImageLoader;
-import ryan.shavell.main.resources.SpriteSheet;
-import ryan.shavell.main.resources.UnderColor;
+import ryan.shavell.main.resources.*;
+
 import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
@@ -38,8 +37,9 @@ public class Arena implements InputTaker, Drawable {
     private BufferedImage background = null;
 
     private SpriteSheet battlePointer;
+    private Animation pointedSelected;
 
-    private static SoulType soulType;
+    //private static SoulType soulType;
 
     private static DialogBox dialogBox;
     private static ChatBox chatBubble;
@@ -84,12 +84,14 @@ public class Arena implements InputTaker, Drawable {
         self = this;
         this.mob = mob;
 
+        Game.setState(Game.State.ENCOUNTER);
+
         if (mob.isBoss()) {
             background = ImageLoader.getImage("battle_background_boss");
         }
 
         buttons = new SpriteSheet(110, 42, 2, 4, "ss_battle_buttons");
-        soulType = SoulType.NORMAL;
+        PlayerInfo.soulType = SoulType.NORMAL;
 
         dialogBox = new DialogBox(251);
         chatBubble = new ChatBox(80);
@@ -99,10 +101,11 @@ public class Arena implements InputTaker, Drawable {
         hp = ImageLoader.getImage("hp");
         fightGUI = ImageLoader.getImage("fight_gui");
         battlePointer = new SpriteSheet(14, 128, 2, 1, "battle_target");
+        pointedSelected = new Animation(3, battlePointer.get(0, 0), battlePointer.get(1, 0));
 
         //TODO: make Mob provide the starting text
         //dialogBox.setText("* ......?");
-        dialogBox.setText("* Frisk appears!");
+        dialogBox.setText("* Asriel takes a stand!");
     }
 
     public void resetAttackVariables() {
@@ -281,6 +284,7 @@ public class Arena implements InputTaker, Drawable {
         } else if (doingAttack && didTarget && !oldDidTarget && !missed) { //Runs right when the player locked in
             w.reset();
             AudioHandler.playEffect(w.getSound());
+            pointedSelected.reset();
             midAttack = true;
         } else if (doingAttack && damageAnim && !dealtDamage) {
             //TODO: damage is different based off of where the attack target was
@@ -311,12 +315,11 @@ public class Arena implements InputTaker, Drawable {
             if (!music.equals(mobMusic)) {
                 AudioHandler.stopSong(mobMusic);
                 AudioHandler.playSong(music, true);
-                //TODO: stop existing music if it wasn't null
             }
             mobMusic = music;
         } else {
             if (mobMusic != null) {
-                AudioHandler.stopSong(mobMusic); //TODO: if it wasn't null before, stop the existing music
+                AudioHandler.stopSong(mobMusic);
             }
             mobMusic = null;
         }
@@ -360,11 +363,11 @@ public class Arena implements InputTaker, Drawable {
         //else System.out.println("INVALID SELECTED MENU ITEM \"" + selected + "\"!!!");
 
         if (selectedPoint != null && subMenu == -1 && !freezeMenu) {
-            g.drawImage(soulType.getImage(), selectedPoint.x + 8, selectedPoint.y + 14, null);
+            g.drawImage(PlayerInfo.soulType.getImage(), selectedPoint.x + 8, selectedPoint.y + 14, null);
         }
 
         /*
-        BufferedImage image = mob.getImage();
+        BufferedImage image = mob.get();
         int width = image.getWidth();
         //int height = image.getHeight();
         if (mob.shouldDoubleSize()) {
@@ -375,7 +378,7 @@ public class Arena implements InputTaker, Drawable {
         int centerX = Main.WIDTH / 2;
         int x = centerX - (width / 2);
 
-        if (!dealtDamage) g.drawImage(mob.getImage(), x, mob.getYOffset(), width, height, null);
+        if (!dealtDamage) g.drawImage(mob.get(), x, mob.getYOffset(), width, height, null);
         */
         int centerX = Main.WIDTH / 2;
         int x = mob.getX();
@@ -419,7 +422,8 @@ public class Arena implements InputTaker, Drawable {
 
         if (doingAttack) {
             g.drawImage(fightGUI, dialogBox.getX() + 15, dialogBox.getY() + 14, null);
-            g.drawImage(battlePointer.getImage(didTarget ? 1 : 0, 0), battleTargeterX, dialogBox.getY() + 6, null); //TODO: animate
+            BufferedImage draw = !didTarget ? battlePointer.get(0, 0) : pointedSelected.getImage();
+            g.drawImage(draw, battleTargeterX, dialogBox.getY() + 6, null); //TODO: animate
             if (midAttack && !damageAnim) {
                 if (!PlayerInfo.weapon.isAnimationDone()) {
                     PlayerInfo.weapon.drawEffect(centerX, battleBox.getBounds().y - mob.getYOffset(), g);
@@ -451,7 +455,7 @@ public class Arena implements InputTaker, Drawable {
                     renderX = damageShakeTargetX;
                 }
 
-                //BufferedImage mobImage = healthLost > 0 ? mob.getHitImage() : mob.getImage();
+                //BufferedImage mobImage = healthLost > 0 ? mob.getHitImage() : mob.get();
                 mob.draw(g, renderX, mobY, healthLost > 0);
                 //g.drawImage(mobImage, renderX, mob.getYOffset(), width, height, null);
 
@@ -532,19 +536,19 @@ public class Arena implements InputTaker, Drawable {
     }
 
     public BufferedImage getFight() {
-        return buttons.getImage(0, selected == 0 ? 1 : 0);
+        return buttons.get(0, selected == 0 ? 1 : 0);
     }
 
     public BufferedImage getAct() {
-        return buttons.getImage(1, selected == 1 ? 1 : 0);
+        return buttons.get(1, selected == 1 ? 1 : 0);
     }
 
     public BufferedImage getItem() {
-        return buttons.getImage(0, selected == 2 ? 3 : 2);
+        return buttons.get(0, selected == 2 ? 3 : 2);
     }
 
     public BufferedImage getMercy() {
-        return buttons.getImage(1, selected == 3 ? 3 : 2);
+        return buttons.get(1, selected == 3 ? 3 : 2);
     }
 
     @Override
@@ -569,14 +573,10 @@ public class Arena implements InputTaker, Drawable {
     }
 
     public static void setSoulType(SoulType t) {
-        if (soulType != t) {
+        if (PlayerInfo.soulType != t) {
             //TODO: play sound effect
         }
-        soulType = t;
-    }
-
-    public static SoulType getSoulType() {
-        return soulType;
+        PlayerInfo.soulType = t;
     }
 
     public static Mob getMob() {

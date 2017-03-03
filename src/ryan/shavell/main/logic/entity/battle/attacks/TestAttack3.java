@@ -11,8 +11,7 @@ public class TestAttack3 extends Attack {
     private Long timeOfLastStar = null;
 
     public TestAttack3() {
-        //super(135, 70);
-        super(155, 220);
+        super(135, 80);
         setTimeLength(8);
     }
 

@@ -1,5 +1,6 @@
 package ryan.shavell.main.dialogue.actions;
 
+import ryan.shavell.main.core.Game;
 import ryan.shavell.main.dialogue.DialogBox;
 import ryan.shavell.main.logic.entity.battle.Arena;
 
@@ -10,15 +11,15 @@ public class ActionDialogOption extends Action {
 
     public ActionDialogOption(List<Action>[] paths, String... options) {
         super(()-> {
-            Arena.getDialogBox().setOptions(options);
+            Game.getDialogBox().setOptions(options);
         }, ()-> {
-            DialogBox box = Arena.getDialogBox();
+            DialogBox box = Game.getDialogBox();
             boolean done = box.shouldMoveOn();
             if (done) {
                 List<Action> actions = paths[box.getSelectedOption()];
                 actions.add(0, new ActionDialog(""));
                 int index = 0;
-                for (Action a : Arena.self.actions) {
+                for (Action a : Game.getActionBuffer()) {
                     if (a instanceof ActionDialogOption) { //TODO: fix this for multiple of these in a given chain
                         break;
                     }
@@ -26,7 +27,7 @@ public class ActionDialogOption extends Action {
                 }
                 Collections.reverse(actions);
                 for (Action a : actions) {
-                    Arena.self.actions.add(index, a);
+                    Game.getActionBuffer().add(index, a);
                 }
             }
             return done;

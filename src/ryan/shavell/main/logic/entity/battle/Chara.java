@@ -10,7 +10,6 @@ import ryan.shavell.main.stuff.Utils;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 public class Chara extends Mob {
@@ -25,8 +24,8 @@ public class Chara extends Mob {
     public Chara() {
         super(155);
         sheet = new SpriteSheet(34, 74, 2, 1, "frisk_chara_battle");
-        mostRecentDraw = sheet.getImage(0, 0);
-        current = new Animation(0, sheet.getImage(0, 0));
+        mostRecentDraw = sheet.get(0, 0);
+        current = new Animation(0, sheet.get(0, 0));
         setName("Frisk");
         setMaxHealth(100);
         setAttack(3);
@@ -153,7 +152,7 @@ public class Chara extends Mob {
         g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1f));
 
         g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, chara));
-        BufferedImage overlay = sheet.getImage(1,0);
+        BufferedImage overlay = sheet.get(1,0);
         if (varyChangeWait >= 3) {
             vary = Utils.randomNumber(0, Math.round(5 - (charaLimit * 5)));
             vary = Utils.randomNumber(0, 1) == 0 ? -vary : vary;

@@ -5,6 +5,7 @@ import ryan.shavell.main.logic.entity.battle.Arena;
 import ryan.shavell.main.render.Drawable;
 import java.awt.*;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 //TODO: add timer and delay functionality (NOT THREADED)
@@ -62,9 +63,7 @@ public abstract class Attack implements Drawable {
     }
 
     public void spawnProjectiles(Projectile... ps) {
-        for (Projectile p : ps) {
-            currentProjectiles.add(p);
-        }
+        Collections.addAll(currentProjectiles, ps);
     }
 
     public void spawnProjectiles(List<Projectile> ps) {

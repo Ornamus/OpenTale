@@ -97,7 +97,7 @@ public class BattleBox implements Drawable, InputTaker {
                 attack.start();
                 init = true;
             }
-            SoulType t = Arena.getSoulType();
+            SoulType t = PlayerInfo.soulType;
             int oldX = soulX;
             int oldY = soulY;
             if (t == SoulType.NORMAL) {
@@ -170,7 +170,7 @@ public class BattleBox implements Drawable, InputTaker {
                             timeSinceHit = System.currentTimeMillis();
                             PlayerInfo.currentHealth -= p.getDamage();
                             if (PlayerInfo.currentHealth <= 0) PlayerInfo.currentHealth = 0;
-                            Arena.getSoulType().getDamagedAnimation().reset(); //TODO; put this somewhere better?
+                            PlayerInfo.soulType.getDamagedAnimation().reset(); //TODO; put this somewhere better?
                         }
                     }
                 }
@@ -256,7 +256,7 @@ public class BattleBox implements Drawable, InputTaker {
     public void draw(Graphics2D g) {
         drawBox(g);
         if (!doingResize && (attack == null || !attack.isDone())) {
-            BufferedImage i = immune ? Arena.getSoulType().getDamagedAnimation().getImage() : Arena.getSoulType().getImage();
+            BufferedImage i = immune ? PlayerInfo.soulType.getDamagedAnimation().getImage() : PlayerInfo.soulType.getImage();
             g.drawImage(i, soulX, soulY, null);
             if (attack != null) attack.draw(g);
         }

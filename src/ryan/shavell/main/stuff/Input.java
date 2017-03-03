@@ -28,7 +28,7 @@ public class Input implements KeyListener, MouseListener {
         }
 
         if (newPress) {
-            for (Drawable d : new ArrayList<>(Board.self.drawables)) {
+            for (Drawable d : new ArrayList<>(Board.getDrawables())) {
                 if (d instanceof InputTaker) {
                     InputTaker t = (InputTaker) d;
                     t.onKeyPress(e);
@@ -41,7 +41,7 @@ public class Input implements KeyListener, MouseListener {
     public void keyReleased(KeyEvent e) {
         keysPressed.remove((Object)e.getKeyCode());
 
-        for (Drawable d : new ArrayList<>(Board.self.drawables)) {
+        for (Drawable d : new ArrayList<>(Board.getDrawables())) {
             if (d instanceof InputTaker) {
                 InputTaker t = (InputTaker) d;
                 t.onKeyRelease(e);

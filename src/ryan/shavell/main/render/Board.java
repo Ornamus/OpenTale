@@ -1,10 +1,6 @@
 package ryan.shavell.main.render;
 
-import ryan.shavell.main.dialogue.DialogBox;
-import ryan.shavell.main.logic.entity.battle.*;
 import ryan.shavell.main.logic.entity.overworld.Overworld;
-import ryan.shavell.main.resources.AudioHandler;
-
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -14,8 +10,11 @@ import java.util.List;
 
 public class Board extends JPanel implements ActionListener {
 
-    public List<Drawable> drawables = new ArrayList<>();
-    public static DialogBox dialogBox;
+    private static List<Drawable> add = new ArrayList<>();
+    private static List<Drawable> remove = new ArrayList<>();
+
+    private static List<Drawable> drawables = new ArrayList<>();
+
     private Timer t;
 
     private double scale;
@@ -25,23 +24,27 @@ public class Board extends JPanel implements ActionListener {
     long start;
     public Board() {
         self = this;
-        dialogBox = new DialogBox(320);
-        /*
-        drawables.add(new BasicRenderedThing(0, 0, "home"));
-        drawables.add(new OverworldEntity(100, 100, "sans_temp"));
-        drawables.add(new OverworldPlayer(200, 200));
-        */
-        drawables.add(new Arena(new StoryshiftAsriel()));
-        //drawables.add(new Arena(new Chara()));
-        //drawables.add(new Arena(new Volty(135)));
 
-        /*
+        //drawables.add(new Arena(new StoryshiftAsriel()));
+        //drawables.add(new Arena(new Chara()));
+
         drawables.add(new Overworld());
-        drawables.add(dialogBox);
-        */
+
         t = new Timer(25, this);
         t.start();
         start = System.currentTimeMillis();
+    }
+
+    public static void add(Drawable d) {
+        add.add(d);
+    }
+
+    public static void remove(Drawable d) {
+        remove.add(d);
+    }
+
+    public static List<Drawable> getDrawables() {
+        return new ArrayList<>(drawables);
     }
 
     @Override
@@ -53,6 +56,11 @@ public class Board extends JPanel implements ActionListener {
         g.setColor(Color.BLACK);
 
         scale = 1;
+
+        drawables.addAll(add);
+        add.clear();
+        drawables.removeAll(remove);
+        remove.clear();
 
         for (Drawable d : drawables) {
             d.tick();
@@ -66,7 +74,7 @@ public class Board extends JPanel implements ActionListener {
                 }
             } else {
                 if (scale != 1) {
-                    g.scale(0.5, 0.5); //if scale is not 1, then scale is 2
+                    g.scale(0.5, 0.5);
                     scale = 1;
                 }
             }

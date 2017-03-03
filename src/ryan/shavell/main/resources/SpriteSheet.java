@@ -2,6 +2,7 @@ package ryan.shavell.main.resources;
 
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class SpriteSheet {
@@ -31,16 +32,14 @@ public class SpriteSheet {
         }
     }
 
-    public BufferedImage getImage(int x, int y) {
+    public BufferedImage get(int x, int y) {
         return images[x][y];
     }
 
     public List<BufferedImage> getAllImages() {
         List<BufferedImage> allImages = new ArrayList<>();
         for (BufferedImage[] array : images) {
-            for (BufferedImage i : array) {
-                allImages.add(i);
-            }
+            Collections.addAll(allImages, array);
         }
         return allImages;
     }

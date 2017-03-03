@@ -1,6 +1,5 @@
 package ryan.shavell.main.logic.entity.battle.attacks.Volty;
 
-import com.sun.corba.se.impl.naming.cosnaming.NamingUtils;
 import ryan.shavell.main.core.Main;
 import ryan.shavell.main.logic.entity.battle.Arena;
 import ryan.shavell.main.logic.entity.battle.attacks.Attack;

@@ -10,7 +10,7 @@ import ryan.shavell.main.stuff.Utils;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 public class StoryshiftAsriel extends Mob {
@@ -34,31 +34,29 @@ public class StoryshiftAsriel extends Mob {
     private String[] conversationArray = {"Is my warrior outfit ready to be seen...?", "What? No, the flirting isn't distracting me!",
             "You know, STAR BLAZING isn't my only original attack.", "A good deity keeps a few secrets up his sleeve.", "I'll be a great/nCaptain of the Royal Guard!",
             "Dad will be so proud and Mom will bake a pie for me!", "Chara will be glad but...", "Won't I have to leave them behind to go on patrol a lot?",
-            "And the family will be torn apart even more.", "Ugh, that's future me's problem!", "Charging my special attack now!", "Hope your b-butt is ready!",
+            "And the family will be torn apart even more.", "Ugh, that's future me's problem!", "Charging my [color(255,0,0)special attack] now!", "Hope your b-butt is ready!",
             "What's that look for? It's a human saying.", "Okay, so I haven't practiced my insults a lot.", "Speeches are harder to remember.",
             "I don't want to be rude to you either...", "Anyway! Charging is all done!"};
 
     public StoryshiftAsriel() {
         super(150);
         sheet = new SpriteSheet(35, 71, 6, 2, "asriel_battle_temp");
-        mostRecentDraw = sheet.getImage(0, 0);
-        current = new Animation(0, sheet.getImage(0, 0));
+        mostRecentDraw = sheet.get(0, 0);
+        current = new Animation(0, sheet.get(0, 0));
         setName("Asriel");
         setMaxHealth(80);
         setAttack(3);
         setBoss(true);
 
-        for (String s : conversationArray) {
-            conversation.add(s);
-        }
+        Collections.addAll(conversation, conversationArray);
 
         int speed = 10;
 
-        talk0 = new Animation(speed, sheet.getImage(0, 0), sheet.getImage(0, 1));
-        talk1 = new Animation(speed, sheet.getImage(1, 0), sheet.getImage(1, 1));
-        talk2 = new Animation(speed, sheet.getImage(2, 0), sheet.getImage(2, 1));
-        talk3 = new Animation(speed, sheet.getImage(3, 0), sheet.getImage(3, 1));
-        talk4 = new Animation(speed, sheet.getImage(4, 0), sheet.getImage(4, 1));
+        talk0 = new Animation(speed, sheet.get(0, 0), sheet.get(0, 1));
+        talk1 = new Animation(speed, sheet.get(1, 0), sheet.get(1, 1));
+        talk2 = new Animation(speed, sheet.get(2, 0), sheet.get(2, 1));
+        talk3 = new Animation(speed, sheet.get(3, 0), sheet.get(3, 1));
+        talk4 = new Animation(speed, sheet.get(4, 0), sheet.get(4, 1));
     }
 
     @Override
@@ -79,8 +77,7 @@ public class StoryshiftAsriel extends Mob {
             if (lastAction.equals("Flirt")) {
                 a = new TestAttack2();
             } else {
-                //a = new FireRain();
-                a = new TestAttack3();
+                a = new FireRain();
             }
         } else {
             int random = Utils.randomNumber(0, 4);
@@ -117,7 +114,7 @@ public class StoryshiftAsriel extends Mob {
             //actions.add(new ActionImageChange(talk4));
             actions.add(new ActionTalk("This is the stuff of legends!!", "asriel_text", talk4, 0));
             actions.add(new ActionTalk("Hah hah hah hah!!", "asriel_text", talk4, 0));
-            actions.add(new ActionImageChange(sheet.getImage(0, 0)));
+            actions.add(new ActionImageChange(sheet.get(0, 0)));
         }
         actions.add(new ActionPlayerTurn());
         return actions;
@@ -127,7 +124,7 @@ public class StoryshiftAsriel extends Mob {
     public List<Action> onAttack() {
         List<Action> actions = new ArrayList<>();
         /*
-        actions.add(new ActionImageChange(sheet.getImage(4, 0)));
+        actions.add(new ActionImageChange(sheet.get(4, 0)));
         actions.add(new ActionTalk("You think THAT can stop me?", "asriel_text"));
         */
         actions.add(new ActionTriggerPreAttack());
@@ -149,7 +146,7 @@ public class StoryshiftAsriel extends Mob {
                 actions.add(new ActionTalk("Are you kidding me?! This is a fight!", "asriel_text", talk2, 0));
                 //actions.add(new ActionImageChange(talk3));
                 actions.add(new ActionTalk("Does this look like some joke to you?", "asriel_text", talk3, 0));
-                actions.add(new ActionImageChange(sheet.getImage(3, 0)));
+                actions.add(new ActionImageChange(sheet.get(3, 0)));
 
                 List<Action> flirtyOption = new ArrayList<>();
                 List<Action> notFlirtyOption = new ArrayList<>();
@@ -172,7 +169,7 @@ public class StoryshiftAsriel extends Mob {
                 actions.add(new ActionTalk("Heh, I don't blame you.", "asriel_text", talk4, 0));
                 actions.add(new ActionTalk("Let's see how you handle my fabled STAR BLAZING.", "asriel_text", talk4, 0));
                 actions.add(new ActionTalk("Behold!", "asriel_text", talk4, 0));
-                actions.add(new ActionImageChange(sheet.getImage(0, 0)));
+                actions.add(new ActionImageChange(sheet.get(0, 0)));
             } else {
                 actions.add(new ActionDialog("* Asriel is too distracted to flirt. Seems like ACTing won't escalate this battle."));
             }
@@ -202,7 +199,7 @@ public class StoryshiftAsriel extends Mob {
 
     @Override
     public void draw(Graphics2D g, int x, int y, boolean hit) {
-        mostRecentDraw = hit ? sheet.getImage(5, 0) : current.getImage();
+        mostRecentDraw = hit ? sheet.get(5, 0) : current.getImage();
         g.drawImage(mostRecentDraw, x, y, mostRecentDraw.getWidth()  * 2, mostRecentDraw.getHeight() * 2, null);
     }
 

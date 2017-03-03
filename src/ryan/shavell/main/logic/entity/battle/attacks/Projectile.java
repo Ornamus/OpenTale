@@ -3,7 +3,6 @@ package ryan.shavell.main.logic.entity.battle.attacks;
 import ryan.shavell.main.render.Drawable;
 import ryan.shavell.main.resources.Animation;
 import ryan.shavell.main.resources.ImageLoader;
-import ryan.shavell.main.stuff.Utils;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;

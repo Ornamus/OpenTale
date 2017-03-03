@@ -5,7 +5,6 @@ import ryan.shavell.main.resources.AudioHandler;
 import ryan.shavell.main.stuff.Input;
 import javax.swing.*;
 import java.awt.*;
-import java.io.InputStream;
 
 public class Main extends JFrame {
 

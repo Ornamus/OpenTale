@@ -1,5 +1,7 @@
 package ryan.shavell.main.resources;
 
+import ryan.shavell.main.stuff.Log;
+
 import javax.sound.sampled.*;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -42,7 +44,7 @@ public class AudioHandler implements LineListener {
 
             audioClip.start();
         } catch (Exception e) {
-            System.out.println("[ERROR] AudioHandler.play() exception!");
+            Log.e("AudioHandler.play() exception!");
             e.printStackTrace();
         }
     }
