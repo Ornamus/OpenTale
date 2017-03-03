@@ -1,10 +1,7 @@
 package ryan.shavell.main.render;
 
 import ryan.shavell.main.dialogue.DialogBox;
-import ryan.shavell.main.logic.entity.battle.Arena;
-import ryan.shavell.main.logic.entity.battle.StoryshiftAsriel;
-import ryan.shavell.main.logic.entity.battle.TestMob;
-import ryan.shavell.main.logic.entity.battle.Volty;
+import ryan.shavell.main.logic.entity.battle.*;
 import ryan.shavell.main.logic.entity.overworld.Overworld;
 import ryan.shavell.main.resources.AudioHandler;
 
@@ -35,6 +32,7 @@ public class Board extends JPanel implements ActionListener {
         drawables.add(new OverworldPlayer(200, 200));
         */
         drawables.add(new Arena(new StoryshiftAsriel()));
+        //drawables.add(new Arena(new Chara()));
         //drawables.add(new Arena(new Volty(135)));
 
         /*

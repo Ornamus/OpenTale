@@ -7,6 +7,8 @@ import ryan.shavell.main.logic.entity.battle.attacks.Volty.NutSpinAttack;
 import ryan.shavell.main.resources.Animation;
 import ryan.shavell.main.resources.ImageLoader;
 import ryan.shavell.main.stuff.Utils;
+
+import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.List;
@@ -133,17 +135,25 @@ public class Volty extends Mob {
     }
 
     @Override
+    public void draw(Graphics2D g, int x, int y, boolean hit) {
+
+    }
+
+    @Override
     public String getCheckInfo() {
         //return super.getCheckInfo() + "/n* Mettaton's demonic cousin...?";
         return "* VOLTY - ATK 1557 DEF 1902/n* Satan incarnate...?";
     }
 
     @Override
+    public int getX() {
+        return 0;
+    }
+
     public BufferedImage getImage() {
         return i;
     }
 
-    @Override
     public BufferedImage getHitImage() {
         return i;
     }

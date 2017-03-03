@@ -10,6 +10,8 @@ public class AudioHandler implements LineListener {
 
     private static Map<String, Clip> clips = new HashMap<>();
 
+    private static List<String> audioToStop = new ArrayList<>();
+
     private static List<AudioHandler> newAudio = new ArrayList<>();
     private static List<AudioHandler> handlers = new ArrayList<>();
 
@@ -35,7 +37,7 @@ public class AudioHandler implements LineListener {
         try {
             playCompleted = false;
 
-            Clip audioClip = getClip(audioFileName);
+            audioClip = getClip(audioFileName);
             audioClip.addLineListener(this);
 
             audioClip.start();
@@ -57,7 +59,7 @@ public class AudioHandler implements LineListener {
 
         } else if (type == LineEvent.Type.STOP) {
             playCompleted = true;
-            audioClip.close();
+            //audioClip.close();
             //System.out.println("Playback completed.");
         }
 
@@ -75,12 +77,28 @@ public class AudioHandler implements LineListener {
                     newAudio.remove(h);
                     handlers.add(h);
                 }
+                String s;
+                while (audioToStop.size() > 0 && (s = audioToStop.get(0)) != null) {
+                    for (AudioHandler a : new ArrayList<>(handlers)) {
+                        if (a.audioFileName.equalsIgnoreCase(s)) {
+                            a.audioClip.stop();
+                            a.audioClip.close();
+                            a.loop = false;
+                            a.playCompleted = true;
+                            handlers.remove(a);
+                            audioToStop.remove(s);
+                            System.out.println("Found command to remove \"" + s + "\"");
+                        }
+                    }
+                }
                 for (AudioHandler a : new ArrayList<>(handlers)) {
                     if (a.playCompleted) {
                         if (a.loop) {
                             a.play();
                         } else {
-                            //a.audioClip.removeLineListener(a);
+                            a.audioClip.removeLineListener(a);
+                            //a.audioClip.
+                            a.audioClip = null;
                             handlers.remove(a);
                         }
                     }
@@ -110,6 +128,13 @@ public class AudioHandler implements LineListener {
      */
     public static void playEffect(String audioFileName) {
         newAudio.add(new AudioHandler("sound_effects/" + audioFileName, false));
+    }
+
+    public static void stopSong(String audioFileName) {
+        if (audioFileName != null) {
+            audioToStop.add("music/" + audioFileName);
+            System.out.println("Gave command to remove \"" + audioFileName + "\"");
+        }
     }
 
     public static Clip getClip(String originalAudioFile) {

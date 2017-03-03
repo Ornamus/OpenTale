@@ -27,7 +27,6 @@ import java.util.List;
 
 public class Arena implements InputTaker, Drawable {
 
-    //TODO: make mob be rendered relative to battlebox height UNLESS the height is smaller than default
     //TODO: code cleanup, prettify (look into breaking some logic/variable heavy animations and the like into other classes?)
 
     public static Arena self;
@@ -103,7 +102,7 @@ public class Arena implements InputTaker, Drawable {
 
         //TODO: make Mob provide the starting text
         //dialogBox.setText("* ......?");
-        dialogBox.setText("* Asriel takes a stand!");
+        dialogBox.setText("* Frisk appears!");
     }
 
     public void resetAttackVariables() {
@@ -310,13 +309,16 @@ public class Arena implements InputTaker, Drawable {
         String music = mob.getMusic();
         if (music != null) {
             if (!music.equals(mobMusic)) {
+                AudioHandler.stopSong(mobMusic);
                 AudioHandler.playSong(music, true);
                 //TODO: stop existing music if it wasn't null
             }
             mobMusic = music;
         } else {
+            if (mobMusic != null) {
+                AudioHandler.stopSong(mobMusic); //TODO: if it wasn't null before, stop the existing music
+            }
             mobMusic = null;
-            //TODO: if it wasn't null before, stop the existing music
         }
 
         dialogBox.tick();
@@ -361,9 +363,10 @@ public class Arena implements InputTaker, Drawable {
             g.drawImage(soulType.getImage(), selectedPoint.x + 8, selectedPoint.y + 14, null);
         }
 
+        /*
         BufferedImage image = mob.getImage();
         int width = image.getWidth();
-        int height = image.getHeight();
+        //int height = image.getHeight();
         if (mob.shouldDoubleSize()) {
             width *= 2;
             height *= 2;
@@ -372,7 +375,16 @@ public class Arena implements InputTaker, Drawable {
         int centerX = Main.WIDTH / 2;
         int x = centerX - (width / 2);
 
-        if (!dealtDamage) g.drawImage(mob.getImage(), x, mob.getY(), width, height, null);
+        if (!dealtDamage) g.drawImage(mob.getImage(), x, mob.getYOffset(), width, height, null);
+        */
+        int centerX = Main.WIDTH / 2;
+        int x = mob.getX();
+        int mobY = battleBox.getBounds().y - mob.getYOffset();
+        if (mobY > 251 - mob.getYOffset()) mobY = 251 - mob.getYOffset();
+
+        if (!dealtDamage) {
+            mob.draw(g, x, mobY, false);
+        }
 
         drawPlayerInfo(g);
         chatBubble.draw(g);
@@ -407,17 +419,15 @@ public class Arena implements InputTaker, Drawable {
 
         if (doingAttack) {
             g.drawImage(fightGUI, dialogBox.getX() + 15, dialogBox.getY() + 14, null);
-            g.drawImage(battlePointer.getImage(didTarget ? 1 : 0, 0), battleTargeterX, dialogBox.getY() + 6, null);
+            g.drawImage(battlePointer.getImage(didTarget ? 1 : 0, 0), battleTargeterX, dialogBox.getY() + 6, null); //TODO: animate
             if (midAttack && !damageAnim) {
-                //TODO: animation only runs properly the first attack, breaks after that. DEBUG
                 if (!PlayerInfo.weapon.isAnimationDone()) {
-                    PlayerInfo.weapon.drawEffect(centerX, mob.getY(), g);
+                    PlayerInfo.weapon.drawEffect(centerX, battleBox.getBounds().y - mob.getYOffset(), g);
                 } else {
                     damageAnim = true;
                     //System.out.println("Animation done");
                 }
             } else if (dealtDamage) {
-                //TODO: Animate the health bar going down
                 //TODO: bouncing damage numbers
                 int renderX = x;
                 if (healthLost > 0) {
@@ -440,17 +450,18 @@ public class Arena implements InputTaker, Drawable {
                     }
                     renderX = damageShakeTargetX;
                 }
-                BufferedImage mobImage = healthLost > 0 ? mob.getHitImage() : mob.getImage();
-                g.drawImage(mobImage, renderX, mob.getY(), width, height, null);
+
+                //BufferedImage mobImage = healthLost > 0 ? mob.getHitImage() : mob.getImage();
+                mob.draw(g, renderX, mobY, healthLost > 0);
+                //g.drawImage(mobImage, renderX, mob.getYOffset(), width, height, null);
 
                 int hBarWidth = 103, hBarHeight = 15;
 
-                //TODO: deal with this
                 if (mob.isBoss()) {
                     hBarWidth *= 1.50;
                 }
 
-                int hBarX = centerX - (hBarWidth / 2), hBarY = mob.getY() - 25;
+                int hBarX = centerX - (hBarWidth / 2), hBarY = (battleBox.getBounds().y - mob.getYOffset()) - 25;
 
                 g.setColor(Color.black);
                 g.drawRect(hBarX, hBarY, hBarWidth, hBarHeight);
@@ -467,7 +478,7 @@ public class Arena implements InputTaker, Drawable {
 
                 double fillAmount = (hBarWidth - 2.0) * mob.getHealthPercent();
                 double diff = lastHPWidth - fillAmount;
-                double rateOfchange = diff / 20.0; //TODO: turn this number into a variable for easy tuning   16
+                double rateOfchange = diff / 20.0; //TODO: turn this number into a variable for easy tuning
 
                 currentHPBarWidth -= rateOfchange;
                 if (currentHPBarWidth < fillAmount) currentHPBarWidth = fillAmount;
@@ -504,7 +515,6 @@ public class Arena implements InputTaker, Drawable {
 
         Point stats = new Point(33, 420);
         g.drawString(PlayerInfo.name + "  LV " + PlayerInfo.level, stats.x, stats.y);
-        //g.drawString("SHIFTY  LV 1", stats.x, stats.y); //TODO: pull name and level variables from player info once that exists
 
         g.setColor(UnderColor.UNDER_HEALTHBAR_RED);
         Rectangle rect = new Rectangle(actPoint.x + 90, stats.y - 18, 25, 21);

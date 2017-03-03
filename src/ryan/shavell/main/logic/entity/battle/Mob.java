@@ -4,6 +4,7 @@ import ryan.shavell.main.dialogue.actions.Action;
 import ryan.shavell.main.logic.entity.battle.attacks.Attack;
 import ryan.shavell.main.resources.Animation;
 
+import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.util.List;
 
@@ -76,7 +77,7 @@ public abstract class Mob {
         return defense;
     }
 
-    public int getY() {
+    public int getYOffset() {
         return y;
     }
 
@@ -92,9 +93,10 @@ public abstract class Mob {
         return (getCurrentHealth() * 1.0) / (getMaxHealth() * 1.0);
     }
 
+    public abstract int getX();
+
     public abstract String getNewTurnText();
     public abstract Attack getNextAttack();
-
 
     public abstract List<Action> onPreAttack();
     public abstract List<Action> onAttack();
@@ -104,9 +106,11 @@ public abstract class Mob {
 
     public abstract String[] getACT();
 
-    public abstract BufferedImage getImage();
+    public abstract void draw(Graphics2D g, int x, int y, boolean hit);
 
-    public abstract BufferedImage getHitImage();
+    //public abstract BufferedImage getImage();
+
+    //public abstract BufferedImage getHitImage();
 
     public abstract void setAnimation(Animation animation);
     public abstract void setImage(BufferedImage image);

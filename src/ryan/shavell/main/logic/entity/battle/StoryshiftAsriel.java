@@ -1,11 +1,13 @@
 package ryan.shavell.main.logic.entity.battle;
 
+import ryan.shavell.main.core.Main;
 import ryan.shavell.main.dialogue.actions.*;
 import ryan.shavell.main.logic.entity.battle.attacks.*;
 import ryan.shavell.main.resources.Animation;
 import ryan.shavell.main.resources.SpriteSheet;
 import ryan.shavell.main.stuff.Utils;
 
+import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -15,6 +17,7 @@ public class StoryshiftAsriel extends Mob {
 
     private SpriteSheet sheet;
     private Animation current;
+    private BufferedImage mostRecentDraw;
 
     private boolean starstruck = false;
     private boolean didFlirt = false;
@@ -36,8 +39,9 @@ public class StoryshiftAsriel extends Mob {
             "I don't want to be rude to you either...", "Anyway! Charging is all done!"};
 
     public StoryshiftAsriel() {
-        super(100);
+        super(150);
         sheet = new SpriteSheet(35, 71, 6, 2, "asriel_battle_temp");
+        mostRecentDraw = sheet.getImage(0, 0);
         current = new Animation(0, sheet.getImage(0, 0));
         setName("Asriel");
         setMaxHealth(80);
@@ -75,7 +79,8 @@ public class StoryshiftAsriel extends Mob {
             if (lastAction.equals("Flirt")) {
                 a = new TestAttack2();
             } else {
-                a = new FireRain();
+                //a = new FireRain();
+                a = new TestAttack3();
             }
         } else {
             int random = Utils.randomNumber(0, 4);
@@ -196,9 +201,20 @@ public class StoryshiftAsriel extends Mob {
     }
 
     @Override
+    public void draw(Graphics2D g, int x, int y, boolean hit) {
+        mostRecentDraw = hit ? sheet.getImage(5, 0) : current.getImage();
+        g.drawImage(mostRecentDraw, x, y, mostRecentDraw.getWidth()  * 2, mostRecentDraw.getHeight() * 2, null);
+    }
+
+    @Override
     public String getCheckInfo() {
         lastAction = "CHECK";
         return super.getCheckInfo() + "/n* Puts on a brave face, but gets emotional very easily.";
+    }
+
+    @Override
+    public int getX() {
+        return (Main.WIDTH / 2) - (mostRecentDraw.getWidth());
     }
 
     @Override
@@ -209,16 +225,6 @@ public class StoryshiftAsriel extends Mob {
     @Override
     public void setImage(BufferedImage i) {
         current = new Animation(0, i);
-    }
-
-    @Override
-    public BufferedImage getImage() {
-        return current.getImage();
-    }
-
-    @Override
-    public BufferedImage getHitImage() {
-        return sheet.getImage(5, 0);
     }
 
     @Override

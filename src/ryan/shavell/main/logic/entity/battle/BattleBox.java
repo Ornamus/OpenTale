@@ -15,7 +15,6 @@ import java.awt.geom.Line2D;
 import java.awt.image.BufferedImage;
 
 //TODO: figure out if the new y positioning is correct or not (is it always growing from the bottom, or centered until it's too big THEN growing from bottom?
-//TODO: is pre-programmed/constructor-passed x and y redundant now, since resizing and recalculatingBounds throws those values that out the window?
 //TODO: resize box and show heart WHILE pre-attack mob dialog is happening instead of waiting until the dialog is complete
 //TODO: Figure out why holding Z makes blue hearts have input lag (might not actually be a thing?)
 
@@ -28,6 +27,7 @@ import java.awt.image.BufferedImage;
 public class BattleBox implements Drawable, InputTaker {
 
     private static final int SOUL_SPEED = 3;
+    private static final int RESIZE_SPEED = 20; //24
 
     private boolean keyUp, keyLeft, keyRight, keyDown;
 
@@ -177,7 +177,7 @@ public class BattleBox implements Drawable, InputTaker {
             }
 
         } else {
-            int rateOfChange = 24;
+            int rateOfChange = RESIZE_SPEED;
             if (currentWidth == endWidth && currentHeight == endHeight) {
                 doingResize = false;
             } else {
@@ -216,7 +216,7 @@ public class BattleBox implements Drawable, InputTaker {
         }
     }
 
-    private int currentWidth, currentHeight, endWidth, endHeight, renderX, renderY;
+    private int currentWidth = width, currentHeight = height, endWidth, endHeight, renderX = x, renderY = y;
 
     public void doResizeAnimation(int startWidth, int startHeight, int endWidth, int endHeight) {
         width = endWidth;
@@ -291,6 +291,10 @@ public class BattleBox implements Drawable, InputTaker {
     public void setAttack(Attack a) {
         attack = a;
         reset();
+    }
+
+    public Rectangle getBounds() {
+        return new Rectangle(renderX, renderY, currentWidth, currentHeight);
     }
 
     @Override
