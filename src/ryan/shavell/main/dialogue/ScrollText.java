@@ -5,12 +5,12 @@ import ryan.shavell.main.render.Drawable;
 import ryan.shavell.main.resources.AudioHandler;
 import ryan.shavell.main.stuff.Log;
 import ryan.shavell.main.stuff.Utils;
-
-import javax.xml.soap.Text;
 import java.awt.*;
 import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
 import java.util.List;
+
+//TODO: DOES ONLY PAPYRUS HAVE SHAKY TEXT?
 
 public class ScrollText implements Drawable {
 
@@ -48,6 +48,10 @@ public class ScrollText implements Drawable {
 
     public String getText() {
         return text;
+    }
+
+    public Font getFont() {
+        return font;
     }
 
     public boolean isScrolling() {
@@ -150,7 +154,7 @@ public class ScrollText implements Drawable {
                 String[] parts = args.split(",");
                 Color c = new Color(Integer.parseInt(parts[0]), Integer.parseInt(parts[1]), Integer.parseInt(parts[2]));
                 textData.color = c;
-                Log.d("Should color \"" + textData.text + "\" " + c.toString());
+                //Log.d("Should color \"" + textData.text + "\" " + c.toString());
             }
             //}
             allMetadata.add(textData);
@@ -295,8 +299,8 @@ public class ScrollText implements Drawable {
                 int xShift = 0;
                 int yShift = 0;
 
-                if (Utils.randomNumber(0, 600) == 0) xShift = Utils.randomNumber(0, 1) == 0 ? 1 : -1;
-                if (Utils.randomNumber(0, 600) == 0) yShift = Utils.randomNumber(0, 1) == 0 ? 1 : -1;
+                //if (Utils.randomNumber(0, 600) == 0) xShift = Utils.randomNumber(0, 1) == 0 ? 1 : -1;
+                //if (Utils.randomNumber(0, 600) == 0) yShift = Utils.randomNumber(0, 1) == 0 ? 1 : -1;
 
                 g.drawString(curr + "", currX + xShift, y + yShift);
                 currX += metrics.stringWidth(curr) + spaceWidth;

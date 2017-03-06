@@ -3,7 +3,6 @@ package ryan.shavell.main.logic.entity.battle.attacks;
 import ryan.shavell.main.render.Drawable;
 import ryan.shavell.main.resources.Animation;
 import ryan.shavell.main.resources.ImageLoader;
-
 import java.awt.*;
 import java.awt.image.BufferedImage;
 
@@ -24,6 +23,8 @@ public class Projectile implements Drawable {
     protected boolean rotateToAngle = false;
 
     protected boolean movingAtAngle = false;
+
+    private boolean shouldDelete = false;
 
     private int damage = 3;
 
@@ -59,6 +60,14 @@ public class Projectile implements Drawable {
         return this;
     }
 
+    public boolean isMovingAtAngle() {
+        return movingAtAngle;
+    }
+
+    public double getAngle() {
+        return angle;
+    }
+
     @Override
     public void tick() {
         oldX = x;
@@ -76,6 +85,14 @@ public class Projectile implements Drawable {
 
     public double getY() {
         return y;
+    }
+
+    public void setX(double newX) {
+        x = newX;
+    }
+
+    public void setY(double newY) {
+        y = newY;
     }
 
     public int getXRound() {
@@ -101,6 +118,14 @@ public class Projectile implements Drawable {
 
     public int getDamage() {
         return damage;
+    }
+
+    public boolean shouldDelete() {
+        return shouldDelete;
+    }
+
+    public void setShouldDelete(boolean b) {
+        shouldDelete = b;
     }
 
     @Override

@@ -3,6 +3,7 @@ package ryan.shavell.main.logic.entity.battle;
 import ryan.shavell.main.core.Main;
 import ryan.shavell.main.dialogue.actions.*;
 import ryan.shavell.main.logic.entity.battle.attacks.*;
+import ryan.shavell.main.logic.entity.battle.attacks.Asriel.*;
 import ryan.shavell.main.resources.Animation;
 import ryan.shavell.main.resources.SpriteSheet;
 import ryan.shavell.main.stuff.Utils;

@@ -39,6 +39,10 @@ public class Animation {
         return currentFrame;
     }
 
+    public BufferedImage getFrame(int frame) {
+        return images[frame];
+    }
+
     public void setPaused(boolean paused) {
         this.paused = paused;
     }

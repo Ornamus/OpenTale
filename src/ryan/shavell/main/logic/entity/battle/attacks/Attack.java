@@ -72,8 +72,12 @@ public abstract class Attack implements Drawable {
 
     @Override
     public void tick() {
-        for (Projectile p : currentProjectiles) {
-            p.tick();
+        for (Projectile p : new ArrayList<>(currentProjectiles)) {
+            if (p.shouldDelete()) {
+                currentProjectiles.remove(p);
+            } else {
+                p.tick();
+            }
         }
     }
 

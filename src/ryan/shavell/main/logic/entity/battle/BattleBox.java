@@ -169,7 +169,10 @@ public class BattleBox implements Drawable, InputTaker {
                             immune = true;
                             timeSinceHit = System.currentTimeMillis();
                             PlayerInfo.currentHealth -= p.getDamage();
-                            if (PlayerInfo.currentHealth <= 0) PlayerInfo.currentHealth = 0;
+                            if (PlayerInfo.currentHealth <= 0) {
+                                PlayerInfo.currentHealth = 0;
+                                Arena.startDeathAnimation(soulX, soulY);
+                            }
                             PlayerInfo.soulType.getDamagedAnimation().reset(); //TODO; put this somewhere better?
                         }
                     }

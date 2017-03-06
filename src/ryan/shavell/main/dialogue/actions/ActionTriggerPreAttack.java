@@ -9,7 +9,9 @@ public class ActionTriggerPreAttack extends Action {
     public ActionTriggerPreAttack() {
         super(()-> {
             List<Action> actions = Arena.getMob().onPreAttack();
-            Arena.self.actions.addAll(actions);
+            actions.add(new ActionStartAttack());
+            //Arena.self.actions.addAll(actions);
+            Arena.self.actions = actions;
         }, ()-> true);
     }
 }

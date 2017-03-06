@@ -17,7 +17,10 @@ public abstract class Mob {
     private int maxHealth = 10, currentHealth = 10, attack = 0, defense = 0;
     private String name = null;
 
+    private String lastAction = "none";
+
     private boolean boss = false;
+    private boolean spareable = false;
 
     public Mob(int y) {
         this.y = y;
@@ -93,16 +96,33 @@ public abstract class Mob {
         return (getCurrentHealth() * 1.0) / (getMaxHealth() * 1.0);
     }
 
+    public void setLastAction(String s) {
+        lastAction = s;
+    }
+
+    public String getLastAction() {
+        return lastAction;
+    }
+
+    public boolean isSpareable() {
+        return spareable;
+    }
+
+    public void setSpareable(boolean s) {
+        spareable = s;
+    }
+
     public abstract int getX();
 
     public abstract String getNewTurnText();
     public abstract Attack getNextAttack();
 
     public abstract List<Action> onPreAttack();
+    public abstract List<Action> onAfterAttack(Attack a);
+
     public abstract List<Action> onAttack();
     public abstract List<Action> onACT(String option);
     public abstract List<Action> onSPARE();
-    public abstract List<Action> onAfterAttack(Attack a);
 
     public abstract String[] getACT();
 

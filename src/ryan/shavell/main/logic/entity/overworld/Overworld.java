@@ -3,10 +3,7 @@ package ryan.shavell.main.logic.entity.overworld;
 import ryan.shavell.main.core.Game;
 import ryan.shavell.main.core.Main;
 import ryan.shavell.main.dialogue.DialogBox;
-import ryan.shavell.main.dialogue.actions.Action;
-import ryan.shavell.main.dialogue.actions.ActionDialog;
-import ryan.shavell.main.dialogue.actions.ActionDialogOption;
-import ryan.shavell.main.dialogue.actions.ActionStartEncounter;
+import ryan.shavell.main.dialogue.actions.*;
 import ryan.shavell.main.logic.InputTaker;
 import ryan.shavell.main.logic.SoulType;
 import ryan.shavell.main.logic.entity.battle.Arena;
@@ -102,6 +99,7 @@ public class Overworld implements Drawable, InputTaker {
             List<Action> yes = new ArrayList<>();
 
             no.add(new ActionDialog("* Alright! Cool! Talk to you later, then.", voice));
+            no.add(new ActionCrash());
 
             yes.add(new ActionDialog("* Alright, yeah, sure! It's good practice, isn't it?", voice));
             yes.add(new ActionDialog("* Just don't forget this is just a demo, okay?", voice));

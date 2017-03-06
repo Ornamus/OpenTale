@@ -81,6 +81,7 @@ public class AudioHandler implements LineListener {
                 }
                 String s;
                 while (audioToStop.size() > 0 && (s = audioToStop.get(0)) != null) {
+                    boolean noMatch = true;
                     for (AudioHandler a : new ArrayList<>(handlers)) {
                         if (a.audioFileName.equalsIgnoreCase(s)) {
                             a.audioClip.stop();
@@ -89,9 +90,11 @@ public class AudioHandler implements LineListener {
                             a.playCompleted = true;
                             handlers.remove(a);
                             audioToStop.remove(s);
+                            noMatch = false;
                             System.out.println("Found command to remove \"" + s + "\"");
                         }
                     }
+                    if (noMatch) audioToStop.remove(s);
                 }
                 for (AudioHandler a : new ArrayList<>(handlers)) {
                     if (a.playCompleted) {

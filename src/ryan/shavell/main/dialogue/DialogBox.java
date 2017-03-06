@@ -86,6 +86,14 @@ public class DialogBox implements Drawable, InputTaker {
         optionFour.setVisuals(c, f);
     }
 
+    public void setColors(Color t, Color o1, Color o2, Color o3, Color o4) {
+        text.setVisuals(t, text.getFont());
+        optionOne.setVisuals(o1, optionOne.getFont());
+        optionTwo.setVisuals(o2, optionTwo.getFont());
+        optionThree.setVisuals(o3, optionThree.getFont());
+        optionFour.setVisuals(o4, optionFour.getFont());
+    }
+
     /**
      * Sets all relevant variables and Objects back to their defaults.
      */
