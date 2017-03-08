@@ -7,7 +7,6 @@ import ryan.shavell.main.logic.entity.battle.attacks.Asriel.*;
 import ryan.shavell.main.resources.Animation;
 import ryan.shavell.main.resources.SpriteSheet;
 import ryan.shavell.main.stuff.Utils;
-
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;

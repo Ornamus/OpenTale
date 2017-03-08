@@ -2,7 +2,6 @@ package ryan.shavell.main.dialogue.actions;
 
 import ryan.shavell.main.core.Game;
 import ryan.shavell.main.dialogue.DialogBox;
-import ryan.shavell.main.logic.entity.battle.Arena;
 
 import java.util.Collections;
 import java.util.List;

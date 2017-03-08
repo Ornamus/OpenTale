@@ -6,6 +6,7 @@ import ryan.shavell.main.logic.InputTaker;
 import ryan.shavell.main.logic.SoulType;
 import ryan.shavell.main.logic.entity.battle.attacks.Attack;
 import ryan.shavell.main.logic.entity.battle.attacks.Projectile;
+import ryan.shavell.main.render.Board;
 import ryan.shavell.main.render.Drawable;
 import ryan.shavell.main.resources.AudioHandler;
 import ryan.shavell.main.stuff.Utils;
@@ -22,7 +23,7 @@ import java.awt.image.BufferedImage;
  * Contains all the logic and variables for handling monster attacks and SOUL stuff.
  *
  * @author Ornamus
- * @version 2017.3.2
+ * @version 2017.3.7
  */
 public class BattleBox implements Drawable, InputTaker {
 
@@ -45,6 +46,10 @@ public class BattleBox implements Drawable, InputTaker {
     private boolean immune = false;
     private Long timeSinceHit = null;
     private double immuneTime = 1;
+
+    private boolean shakingScreen = false;
+    private int flips = 0;
+    private int flipTicksWaited = 0;
 
     private Line2D left, right, top, bottom;
 
@@ -160,6 +165,27 @@ public class BattleBox implements Drawable, InputTaker {
                 double seconds = ((System.currentTimeMillis() - timeSinceHit) * 1.0) / 1000.0;
                 if (seconds > immuneTime && immune) immune = false;
             }
+            if (shakingScreen) {
+                if (flips > 2 || PlayerInfo.currentHealth <= 0) { //TODO: OR Arena.isGameOver() ?
+                    shakingScreen = false;
+                    Board.setXOffset(0);
+                } else {
+                    if (flipTicksWaited == 1) {
+                        if (Board.getXOffset() == 0) {
+                            Board.setXOffset(-1);
+                            Board.setYOffset(-1);
+                        }
+                        else {
+                            Board.setXOffset(0);
+                            Board.setYOffset(0);
+                        }
+                        flips++;
+                        flipTicksWaited = 0;
+                    } else {
+                        flipTicksWaited++;
+                    }
+                }
+            }
             if (attack != null) {
                 attack.tick();
                 for (Projectile p : attack.getProjectiles()) {
@@ -174,6 +200,10 @@ public class BattleBox implements Drawable, InputTaker {
                                 Arena.startDeathAnimation(soulX, soulY);
                             }
                             PlayerInfo.soulType.getDamagedAnimation().reset(); //TODO; put this somewhere better?
+                            Board.setXOffset(-1);
+                            Board.setYOffset(-1);
+                            shakingScreen = true;
+                            flips = 0;
                         }
                     }
                 }

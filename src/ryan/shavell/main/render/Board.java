@@ -15,6 +15,8 @@ public class Board extends JPanel implements ActionListener {
 
     private static List<Drawable> drawables = new ArrayList<>();
 
+    private static int xOffset = 0, yOffset = 0;
+
     private Timer t;
 
     private double scale;
@@ -43,6 +45,23 @@ public class Board extends JPanel implements ActionListener {
         remove.add(d);
     }
 
+    public static int getXOffset() {
+        return xOffset;
+    }
+
+    public static int getYOffset() {
+        return yOffset;
+    }
+
+    public static void setXOffset(int o) {
+        xOffset = o;
+    }
+
+    public static void setYOffset(int o) {
+        yOffset = o;
+    }
+
+
     public static List<Drawable> getDrawables() {
         return new ArrayList<>(drawables);
     }
@@ -52,8 +71,10 @@ public class Board extends JPanel implements ActionListener {
         Graphics2D g = (Graphics2D) graphics;
 
         g.setColor(Color.WHITE);
-        g.fillRect(0, 0, getWidth(), getHeight());
+        g.fillRect(0, 0, getWidth() + 2, getHeight() + 2);
         g.setColor(Color.BLACK);
+
+        g.translate(xOffset, yOffset);
 
         scale = 1;
 

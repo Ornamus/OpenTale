@@ -6,6 +6,7 @@ import ryan.shavell.main.core.player.Item;
 import ryan.shavell.main.core.player.PlayerInfo;
 import ryan.shavell.main.core.player.Weapon;
 import ryan.shavell.main.dialogue.ChatBox;
+import ryan.shavell.main.dialogue.ScrollText;
 import ryan.shavell.main.dialogue.actions.*;
 import ryan.shavell.main.logic.InputTaker;
 import ryan.shavell.main.logic.SoulType;
@@ -17,12 +18,12 @@ import ryan.shavell.main.render.Drawable;
 import ryan.shavell.main.resources.*;
 import ryan.shavell.main.stuff.Log;
 import ryan.shavell.main.stuff.Utils;
-
 import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 public class Arena implements InputTaker, Drawable {
@@ -91,10 +92,11 @@ public class Arena implements InputTaker, Drawable {
             background = ImageLoader.getImage("battle_background_boss");
         }
 
-        buttons = new SpriteSheet(110, 42, 2, 4, "ss_battle_buttons");
+        buttons = new SpriteSheet(110, 42, 2, 4, "ss_battle_buttons_alt");
         PlayerInfo.soulType = SoulType.NORMAL;
 
         dialogBox = new DialogBox(251);
+        dialogBox.setScrollSpeed(ScrollText.SCROLL_FAST);
         chatBubble = new ChatBox(80);
 
         battleBox = new BattleBox(Main.WIDTH / 2);
@@ -259,6 +261,8 @@ public class Arena implements InputTaker, Drawable {
             }
             if (mobTurn) battleBox.onKeyPress(e);
             //chatBubble.onKeyPress(e);
+        } else {
+            dialogBox.onKeyPress(e);
         }
     }
 
@@ -334,13 +338,12 @@ public class Arena implements InputTaker, Drawable {
             if (doingAttack && !didTarget && battleTargeterX > dialogBox.getX() + dialogBox.getWidth()) {
                 didTarget = true;
                 missed = true;
-                damageAnim = true;
-                //System.out.println("HEEEEEEEEEEEEY");
+                damageAnim = true;;
             }
 
             Weapon w = PlayerInfo.weapon;
             if (doingAttack && !didTarget) {
-                battleTargeterX += 7; //8
+                battleTargeterX += 9; //7
             } else if (doingAttack && didTarget && !oldDidTarget && !missed) { //Runs right when the player locked in
                 w.reset();
                 AudioHandler.playEffect(w.getSound());
@@ -412,7 +415,7 @@ public class Arena implements InputTaker, Drawable {
     @Override
     public void draw(Graphics2D g) {
         g.setColor(Color.BLACK);
-        g.fillRect(0, 0, Board.self.getWidth(), Board.self.getHeight());
+        g.fillRect(0, 0, Board.self.getWidth() + 3, Board.self.getHeight() + 3);
         if (!doingDeathAnimation) {
             if (background != null) {
                 g.drawImage(background, 0, 0, null);
@@ -587,6 +590,10 @@ public class Arena implements InputTaker, Drawable {
     private SpriteSheet soulShardSheet;
 
     public static void startDeathAnimation(int dX, int dY) {
+        DialogBox newD = new DialogBox((Main.WIDTH / 2) - 150, 300);
+        newD.setVisuals(Color.WHITE, Main.SANS);
+        newD.setRenderBackground(false);
+        Arena.self.dialogBox = newD;
         Arena.self.deathX = dX;
         Arena.self.deathY = dY;
         AudioHandler.stopSong(Arena.self.mobMusic);
@@ -599,18 +606,39 @@ public class Arena implements InputTaker, Drawable {
 
     private List<Projectile> soulShards = new ArrayList<>();
 
+    boolean setText = false;
     public void drawDeathAnimation(Graphics2D g) {
         long time = System.currentTimeMillis() - deathAnimStart;
-        double secsTillReset = 16 - ((time - (3550 + 1250)) / 1000);
-        if (secsTillReset <= 10) {
-            if (secsTillReset <= -1) {
-                AudioHandler.stopSong("GameOver");
-                Board.add(new Overworld());
-                Board.remove(this);
-            } else {
-                g.setFont(Main.DIALOGUE);
-                g.setColor(Color.WHITE);
-                g.drawString("Reset in: " + Math.round(secsTillReset), (Main.WIDTH / 2) - 100, 350);
+        //double secsTillReset = 16 - ((time - (3550 + 1250)) / 1000);
+        if (setText && actions.isEmpty()) {
+            AudioHandler.stopSong("GameOver");
+            Board.add(new Overworld());
+            Board.remove(this);
+        }
+        if (time > 6750) {
+
+            //TODO: turn this little often-used action code into a function?
+            if (!actions.isEmpty()) {
+                Action current = actions.get(0);
+                if (!current.hasRun()) {
+                    current.run();
+                }
+                if (current.isDone()) {
+                    actions.remove(current);
+                }
+            }
+
+            dialogBox.tick();
+            dialogBox.draw(g);
+            if (!setText) {
+                actions.clear();
+                Collections.addAll(actions, new Action[] {
+                   new ActionDialog("after that big/nshow, *this* is/nthe end?", "sans_text"),
+                        new ActionDialog("c'mon, stand/nproud like you/nalways do...", "sans_text"),
+                        new ActionDialog("  ")
+                });
+                //dialogBox.setText("after that big/nshow, *this* is/nthe end?", "sans_text");
+                setText = true;
             }
         }
         if (time > 3550) {

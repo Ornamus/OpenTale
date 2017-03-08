@@ -299,8 +299,8 @@ public class ScrollText implements Drawable {
                 int xShift = 0;
                 int yShift = 0;
 
-                //if (Utils.randomNumber(0, 600) == 0) xShift = Utils.randomNumber(0, 1) == 0 ? 1 : -1;
-                //if (Utils.randomNumber(0, 600) == 0) yShift = Utils.randomNumber(0, 1) == 0 ? 1 : -1;
+                if (Utils.randomNumber(0, 1000) == 0) xShift = Utils.randomNumber(0, 1) == 0 ? 1 : -1;
+                if (Utils.randomNumber(0, 1000) == 0) yShift = Utils.randomNumber(0, 1) == 0 ? 1 : -1;
 
                 g.drawString(curr + "", currX + xShift, y + yShift);
                 currX += metrics.stringWidth(curr) + spaceWidth;

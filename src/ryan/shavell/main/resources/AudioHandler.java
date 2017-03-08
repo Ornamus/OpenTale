@@ -85,7 +85,7 @@ public class AudioHandler implements LineListener {
                     for (AudioHandler a : new ArrayList<>(handlers)) {
                         if (a.audioFileName.equalsIgnoreCase(s)) {
                             a.audioClip.stop();
-                            a.audioClip.close();
+                            //a.audioClip.close();
                             a.loop = false;
                             a.playCompleted = true;
                             handlers.remove(a);

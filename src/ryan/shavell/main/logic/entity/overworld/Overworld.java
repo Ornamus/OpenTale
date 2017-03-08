@@ -31,7 +31,7 @@ public class Overworld implements Drawable, InputTaker {
     public List<Action> actions = new ArrayList<>();
 
     public Overworld() {
-        player = new OverworldPlayer(200, 200);
+        player = new OverworldPlayer(200, 150);
         entities.add(new BasicRenderedThing(0, 0, "home"));
         entities.add(new OverworldEntity(100, 100, new SpriteSheet(16, 28, 4, 1, "asriel_overworld").get(0,0)));
         entities.add(player);
@@ -101,7 +101,7 @@ public class Overworld implements Drawable, InputTaker {
             no.add(new ActionDialog("* Alright! Cool! Talk to you later, then.", voice));
             no.add(new ActionCrash());
 
-            yes.add(new ActionDialog("* Alright, yeah, sure! It's good practice, isn't it?", voice));
+            yes.add(new ActionDialog("* Alright, yeah, sure!", voice));
             yes.add(new ActionDialog("* Just don't forget this is just a demo, okay?", voice));
             yes.add(new ActionDialog("* Ahem...", voice));
 
@@ -123,7 +123,7 @@ public class Overworld implements Drawable, InputTaker {
 
             yes.add(new ActionStartEncounter(new StoryshiftAsriel()));
 
-            actions.add(new ActionDialogOption(new List[]{yes, no}, "Lets practice your boss fight.", "Nothing."));
+            actions.add(new ActionDialogOption(new List[]{yes, no}, "Lets fight.", "Nothing."));
 
             did = true;
         }

@@ -3,12 +3,9 @@ package ryan.shavell.main.logic.entity.battle;
 import ryan.shavell.main.dialogue.actions.Action;
 import ryan.shavell.main.logic.entity.battle.attacks.Attack;
 import ryan.shavell.main.resources.Animation;
-
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.util.List;
-
-//TODO: implement lastAction here
 
 public abstract class Mob {
 

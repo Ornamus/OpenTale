@@ -10,7 +10,6 @@ import ryan.shavell.main.stuff.Utils;
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 
 import static java.lang.Math.cos;
@@ -52,8 +51,8 @@ public class AsrielSpecial extends Attack {
                 double x = a + cos(angle)*r;//a + r * sin(angle);
                 double y = b + sin(angle)*r;//b + r * cos(angle);
                 Log.d("(" + x + ", " + y + ")");
-                double starX = x - 7;
-                double starY = y - 6;
+                double starX = x - 7.5;
+                double starY = y - 7;
 
                 Projectile p = new Projectile(Utils.round(starX), Utils.round(starY), ImageLoader.getImage("attacks/star_tiny")) {
                     @Override

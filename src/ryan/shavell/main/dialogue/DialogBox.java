@@ -3,7 +3,6 @@ package ryan.shavell.main.dialogue;
 import ryan.shavell.main.core.Main;
 import ryan.shavell.main.core.player.PlayerInfo;
 import ryan.shavell.main.logic.InputTaker;
-import ryan.shavell.main.logic.entity.battle.Arena;
 import ryan.shavell.main.render.Drawable;
 import ryan.shavell.main.resources.AudioHandler;
 import java.awt.*;
@@ -13,7 +12,7 @@ import java.awt.event.KeyEvent;
  * Displays text and options within a chat box. Uses ScrollText for all fancy text things.
  *
  * @author Ornamus
- * @version 2017.2.26
+ * @version 2017.3.7
  */
 public class DialogBox implements Drawable, InputTaker {
 
@@ -29,10 +28,12 @@ public class DialogBox implements Drawable, InputTaker {
 
     private int x, y;
     private ScrollText text;
+    private int scrollSpeed = ScrollText.SCROLL_NORMAL;
 
     private String lastText = null;
 
     private boolean isOptions, blocking, skippable, shouldMoveOn;
+    private boolean renderBackground = true;
 
     public DialogBox(int y) {
         this(33, y);
@@ -52,9 +53,11 @@ public class DialogBox implements Drawable, InputTaker {
         text = new ScrollText(primaryTextPoint.x, primaryTextPoint.y);
         text.setWidthLimit(dialogWidth - x);
 
-        optionOnePoint = new Point(primaryTextPoint.x + 30, primaryTextPoint.y);
-        optionTwoPoint = new Point(optionOnePoint.x, optionOnePoint.y + 34); //formerly y + 40
-        optionThreePoint = new Point(optionOnePoint.x + 250, optionOnePoint.y);
+        System.out.println("Text: " + primaryTextPoint.getX());
+
+        optionOnePoint = new Point(primaryTextPoint.x + 48, primaryTextPoint.y); //formerly 30
+        optionTwoPoint = new Point(optionOnePoint.x, optionOnePoint.y + 32);
+        optionThreePoint = new Point(optionOnePoint.x + 256, optionOnePoint.y); //formerly 250
         optionFourPoint = new Point(optionThreePoint.x, optionTwoPoint.y);
 
         optionOne = new ScrollText(optionOnePoint.x, optionOnePoint.y);
@@ -64,10 +67,10 @@ public class DialogBox implements Drawable, InputTaker {
 
         text.setVisuals(Color.WHITE, Main.DIALOGUE);
 
-        optionOne.setVisuals(Color.WHITE, Main.MENU);
-        optionTwo.setVisuals(Color.WHITE, Main.MENU);
-        optionThree.setVisuals(Color.WHITE, Main.MENU);
-        optionFour.setVisuals(Color.WHITE, Main.MENU);
+        optionOne.setVisuals(Color.WHITE, Main.DIALOGUE);
+        optionTwo.setVisuals(Color.WHITE, Main.DIALOGUE);
+        optionThree.setVisuals(Color.WHITE, Main.DIALOGUE);
+        optionFour.setVisuals(Color.WHITE, Main.DIALOGUE);
 
         //setVisuals(Color.WHITE, Main.DIALOGUE);
     }
@@ -146,7 +149,7 @@ public class DialogBox implements Drawable, InputTaker {
      */
     public void setText(String string) {
         setDefaults();
-        text.setText(string, ScrollText.SCROLL_NORMAL);
+        text.setText(string, scrollSpeed);
         lastText = string;
     }
 
@@ -182,6 +185,10 @@ public class DialogBox implements Drawable, InputTaker {
 
     public void setTextWidthLimit(int limit) {
         text.setWidthLimit(limit);
+    }
+
+    public void setScrollSpeed(int speed) {
+        this.scrollSpeed = speed;
     }
 
     public String getLastText() {
@@ -255,12 +262,12 @@ public class DialogBox implements Drawable, InputTaker {
                 optionSelected = oldOption;
             }
             if (optionSelected != oldOption) {
-                AudioHandler.playEffect("menu_scroll");
+               // AudioHandler.playEffect("menu_scroll"); //TODO: Apparently Undertale doesn't use the scroll sound in the options menu! :(
             }
         } else {
             if (e.getKeyCode() == KeyEvent.VK_X && skippable) {
                 text.forceEndScroll();
-            } else if (e.getKeyCode() == KeyEvent.VK_Z && !isScrolling()) { //TODO: Having shouldMoveOn work like this may be really unhelpfull
+            } else if (e.getKeyCode() == KeyEvent.VK_Z && !isScrolling()) {
                 shouldMoveOn = true;
             }
         }
@@ -296,7 +303,7 @@ public class DialogBox implements Drawable, InputTaker {
 
     @Override
     public void draw(Graphics2D g) {
-        drawBackground(g);
+        if (renderBackground) drawBackground(g);
         text.draw(g);
         optionOne.draw(g);
         optionTwo.draw(g);
@@ -312,13 +319,21 @@ public class DialogBox implements Drawable, InputTaker {
                 System.out.println("INVALID POINT SELECTED IN DIALOGBOX");
                 p = null;
             }
-            g.drawImage(PlayerInfo.soulType.getImage(), p.x - 28, p.y - 16, null);
+            g.drawImage(PlayerInfo.soulType.getImage(), p.x - 35, p.y - 18, null); //formerly x - 28, y - 16
         }
     }
 
     @Override
     public boolean shouldDoubleSize() {
         return false;
+    }
+
+    public boolean shouldRenderBackground() {
+        return renderBackground;
+    }
+
+    public void setRenderBackground(boolean b) {
+        renderBackground = b;
     }
 
     public int getX() {

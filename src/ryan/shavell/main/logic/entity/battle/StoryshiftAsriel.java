@@ -249,6 +249,7 @@ public class StoryshiftAsriel extends Mob {
         List<List<Action>> convo = new ArrayList<>();
 
 
+        /*
         convo.add(simplePart("Is my warrior outfit ready to be seen...?", neutral));
         convo.add(simplePart("What? No, the flirting isn't distracting me!", blush_shock));
         convo.add(simplePart("You know, STAR BLAZING isn't my only original attack.", neutral));
@@ -265,6 +266,7 @@ public class StoryshiftAsriel extends Mob {
         convo.add(simplePart("Okay, so I haven't practiced my insults a lot.", neutral));
         convo.add(simplePart("Speeches are harder to remember.", blush_neutral));
         convo.add(simplePart("I don't want to be rude to you either...", sad));
+        */
 
         Collections.addAll(convo, toList(new ActionTalk("Anyway! Charging is all done!", "asriel_text", neutral, 1),
                 new ActionTalk("Here comes my [color(255,0,0)special secret attack]!", "asriel_text", eyebrow_raise, 1),
