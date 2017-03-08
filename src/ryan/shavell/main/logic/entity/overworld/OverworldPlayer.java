@@ -124,4 +124,12 @@ public class OverworldPlayer extends OverworldEntity implements InputTaker {
             rightHeld = false;
         }
     }
+
+    public double getWidth() {
+        return currentAnimation.getImageWithoutIncrement().getWidth();
+    }
+
+    public double getHeight() {
+        return currentAnimation.getImageWithoutIncrement().getHeight();
+    }
 }

@@ -45,6 +45,7 @@ public class StoryshiftAsriel extends Mob {
         setMaxHealth(130);
         setAttack(3);
         setBoss(true);
+        setFleeable(false);
 
         int speed = 10;
 
@@ -85,7 +86,8 @@ public class StoryshiftAsriel extends Mob {
         Attack a = null;
         if (!didFlirt) {
             if (getLastAction().equals("Flirt")) {
-                a = new TestAttack2();
+                //a = new TestAttack2();
+                a = new StarBlazing();
             } else {
                 a = new FireRain();
                 //a = new StarRain();
@@ -247,7 +249,6 @@ public class StoryshiftAsriel extends Mob {
 
     public void generateConversation() {
         List<List<Action>> convo = new ArrayList<>();
-
 
         /*
         convo.add(simplePart("Is my warrior outfit ready to be seen...?", neutral));

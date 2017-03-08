@@ -185,7 +185,7 @@ public class Arena implements InputTaker, Drawable {
                 if (mob.isSpareable()) {
                     actions.add(new ActionDialog("* You spared " + mob.getName() + "!"));
                     //TODO: new ActionStopSound(mobMusic);
-                    actions.add(new ActionDialog("* You win!/n* You earned 0 EXP and 0 gold!"));
+                    actions.add(new ActionDialog("* YOU WON!/n* You earned 0 XP and 0 gold!"));
                     actions.add(new ActionCrash()); //TODO: go back to overworld
                 } else {
                     actions = mob.onSPARE();
@@ -302,7 +302,11 @@ public class Arena implements InputTaker, Drawable {
                         index++;
                     }
                 } else if (subMenu == 3) {
-                    options = new String[]{"Spare", "Flee"};
+                    if (mob.isFleeable()) {
+                        options = new String[]{"Spare", "Flee"};
+                    } else {
+                        options = new String[]{"Spare"};
+                    }
                 }
                 if (!Arrays.equals(options, oldOptions) || !dialogBox.isOptions()) {
                     dialogBox.setOptions(options);
@@ -590,7 +594,7 @@ public class Arena implements InputTaker, Drawable {
     private SpriteSheet soulShardSheet;
 
     public static void startDeathAnimation(int dX, int dY) {
-        DialogBox newD = new DialogBox((Main.WIDTH / 2) - 150, 300);
+        DialogBox newD = new DialogBox((Main.WIDTH / 2) - 135, 270);
         newD.setVisuals(Color.WHITE, Main.SANS);
         newD.setRenderBackground(false);
         Arena.self.dialogBox = newD;
@@ -657,7 +661,7 @@ public class Arena implements InputTaker, Drawable {
         if (time > 1800) {
             if (animStep == 2) {
                 for (int i=0; i<6; i++) {
-                    System.out.println("spawn shard");
+                    //Log.d("spawn shard");
                     Animation a = new Animation(4, soulShardSheet.get(0, 0), soulShardSheet.get(1, 0), soulShardSheet.get(2, 0), soulShardSheet.get(1, 0));
                     Projectile shard = new Projectile(deathX, deathY, a) {
                         private double xMomentum = Utils.randomNumber(3, 5);

@@ -18,6 +18,7 @@ public abstract class Attack implements Drawable {
     private Long startTime = null;
     private double length = 15; //TODO: what default? should there be a default?
     private SoulType type = SoulType.NORMAL;
+    private List<LoopingAction> loops = new ArrayList();
 
     public Attack() {
         this(165, 140);
@@ -35,6 +36,9 @@ public abstract class Attack implements Drawable {
     }
 
     public void start() {
+        for (LoopingAction l : loops) {
+            l.timeOfLastLoop = System.currentTimeMillis();
+        }
         startTime = System.currentTimeMillis();
         Arena.setSoulType(type);
     }
@@ -45,7 +49,6 @@ public abstract class Attack implements Drawable {
         } else {
             return false;
         }
-        //return false;
     }
 
     public Attack setTimeLength(double seconds) {
@@ -70,8 +73,22 @@ public abstract class Attack implements Drawable {
         currentProjectiles.addAll(ps);
     }
 
+    public void doOnLoop(double seconds, Runnable r) {
+        loops.add(new LoopingAction(seconds, r));
+    }
+
+    public void doOnLoop(double seconds, double startDelay, Runnable r) {
+        loops.add(new LoopingAction(seconds, startDelay, r));
+    }
+
     @Override
     public void tick() {
+        for (LoopingAction l : loops) {
+            if (System.currentTimeMillis() - l.timeOfLastLoop >= l.seconds * 1000) {
+                l.r.run();
+                l.timeOfLastLoop = System.currentTimeMillis();
+            }
+        }
         for (Projectile p : new ArrayList<>(currentProjectiles)) {
             if (p.shouldDelete()) {
                 currentProjectiles.remove(p);
@@ -115,5 +132,24 @@ public abstract class Attack implements Drawable {
     public double getSecondsSinceStart() {
         double secondsSinceStart = ((System.currentTimeMillis() - startTime) * 1.0) / 1000;
         return secondsSinceStart;
+    }
+
+    class LoopingAction {
+        Long timeOfLastLoop = null;
+        final Runnable r;
+        final double seconds;
+        final double startDelay;
+
+        public LoopingAction(double seconds, Runnable r) {
+            this.seconds = seconds;
+            this.r = r;
+            startDelay = seconds;
+        }
+
+        public LoopingAction(double seconds, double startDelay, Runnable r) {
+            this.seconds = seconds;
+            this.r = r;
+            this.startDelay = startDelay;
+        }
     }
 }

@@ -37,6 +37,9 @@ public class ScrollText implements Drawable {
     private boolean calculatedBreaks = false;
     private List<String> breaks = new ArrayList<>();
 
+    private Character[] delayCharacters = {',', '.', '?', '!'};
+    private Character[] noVoiceCharacters = {' ', '-', '\'', ',', '*'};
+
     public ScrollText(int x, int y) {
         this.x = x;
         this.y = y;
@@ -104,15 +107,16 @@ public class ScrollText implements Drawable {
                 currentCharacter++;
                 if (currentCharacter == (text.length())) {
                     currentCharacter = -1;
-                } else {
-                    //TODO: fix crash caused by this code running while a ChatBox is used
-                    /*
-                    if (currentCharacter - 1 >= 0) {
+                } else {                  
+                    if (currentCharacter - 1 >= 0 && currentCharacter - 1 < text.length()) {
                         char c = text.charAt(currentCharacter - 1);
-                        if (c == ',' || c == '-' || c == '.' || c == '?' || c == '!') {
-                            waitedTicks -= 3;
+                        for (Character c2 : delayCharacters) {
+                            if (c == c2) {
+                                waitedTicks -= 3;
+                                break;
+                            }
                         }
-                    }*/
+                    }
                 }
             } else {
                 waitedTicks++;
@@ -272,8 +276,18 @@ public class ScrollText implements Drawable {
                 index++;
             }
 
-            if (waitedTicks == 0 && text.charAt(currentCharacter) != ' ') {
-                AudioHandler.playEffect(typeSound);
+            if (waitedTicks == 0) {
+                boolean voice = true;
+                char c = text.charAt(currentCharacter);
+                for (Character c2 : noVoiceCharacters) {
+                    if (c == c2) {
+                        voice = false;
+                        break;
+                    }
+                }
+                if (voice) {
+                    AudioHandler.playEffect(typeSound);
+                }
             }
         }
     }

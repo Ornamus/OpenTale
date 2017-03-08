@@ -4,14 +4,11 @@ import ryan.shavell.main.logic.entity.battle.Arena;
 import ryan.shavell.main.logic.entity.battle.attacks.Attack;
 import ryan.shavell.main.logic.entity.battle.attacks.Projectile;
 import ryan.shavell.main.resources.ImageLoader;
-import ryan.shavell.main.stuff.Log;
 import ryan.shavell.main.stuff.Utils;
-
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-
 import static java.lang.Math.cos;
 import static java.lang.StrictMath.sin;
 
@@ -19,22 +16,13 @@ public class AsrielSpecial extends Attack {
 
     public AsrielSpecial() {
         super(225, 180);
-        setTimeLength(20);
+        setTimeLength(22);
+        doOnLoop(1.6, 0, spawnCircle);
     }
 
-    @Override
-    public void start() {
-        super.start();
-        timeSinceRing = System.currentTimeMillis() - 1200;
-    }
-
-    private long timeSinceRing;
-
-    @Override
-    public void tick() {
-        super.tick();
-        if (System.currentTimeMillis() - timeSinceRing >= 1200) {
-            //generate star circle
+    private Runnable spawnCircle = new Runnable(){
+        @Override
+        public void run() {
             Rectangle bounds = Arena.getBattleBox().getBounds();
             final double a = bounds.getX() + (bounds.getWidth() / 2), b = bounds.getY() + (bounds.getHeight() / 2);
             final int r = 350;
@@ -50,7 +38,6 @@ public class AsrielSpecial extends Attack {
             while (angle < 360) {
                 double x = a + cos(angle)*r;//a + r * sin(angle);
                 double y = b + sin(angle)*r;//b + r * cos(angle);
-                Log.d("(" + x + ", " + y + ")");
                 double starX = x - 7.5;
                 double starY = y - 7;
 
@@ -63,7 +50,7 @@ public class AsrielSpecial extends Attack {
                         }
                     }
                 };
-                p.setMoveSpeed(3);
+                p.setMoveSpeed(2.25);
                 double starAngle = Utils.getAngle(starX, starY, a, b);
                 starAngle = -starAngle;
                 starAngle -= 90;
@@ -71,10 +58,7 @@ public class AsrielSpecial extends Attack {
                 stars.add(p);
                 angle += (360 / starsToSpawn);
             }
-            /*
-            boolean skip = !(currentStar < skipStart || currentStar > skipStart + starSkipSize);
-                skip = false;
-             */
+
             Collections.sort(stars, (o1, o2) -> Utils.round(o1.getAngle() - o2.getAngle()));
             int currentStar = 1;
             for (Projectile p : stars) {
@@ -83,7 +67,6 @@ public class AsrielSpecial extends Attack {
                 }
                 currentStar++;
             }
-            timeSinceRing = System.currentTimeMillis();
         }
-    }
+    };
 }

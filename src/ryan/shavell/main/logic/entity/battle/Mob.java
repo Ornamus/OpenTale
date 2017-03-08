@@ -18,6 +18,7 @@ public abstract class Mob {
 
     private boolean boss = false;
     private boolean spareable = false;
+    private boolean fleeable = true;
 
     public Mob(int y) {
         this.y = y;
@@ -107,6 +108,14 @@ public abstract class Mob {
 
     public void setSpareable(boolean s) {
         spareable = s;
+    }
+
+    public boolean isFleeable() {
+        return fleeable;
+    }
+
+    public void setFleeable(boolean b) {
+        fleeable = b;
     }
 
     public abstract int getX();

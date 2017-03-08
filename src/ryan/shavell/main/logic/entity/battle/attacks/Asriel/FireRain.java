@@ -7,29 +7,15 @@ import ryan.shavell.main.resources.Animation;
 import ryan.shavell.main.resources.SpriteSheet;
 import ryan.shavell.main.stuff.Utils;
 
-/**
- * Created by Ryan Shavell on 2/24/2017.
- */
 public class FireRain extends Attack {
 
-    private Long timeOfLastFire = null;
     private SpriteSheet fire;
 
     public FireRain() {
         super(200, 140);
         setTimeLength(8);
         fire = new SpriteSheet(13, 14, 2, 1, "attacks/fireball");
-    }
-
-    @Override
-    public void start() {
-        super.start();
-    }
-
-    @Override
-    public void tick() {
-        super.tick();
-        if (timeOfLastFire == null || System.currentTimeMillis() - timeOfLastFire >= 200) {
+        doOnLoop(.2, ()-> {
             int moveSpeed = Utils.randomNumber(2, 4);
             int animSpeed = 0;
             if (moveSpeed == 4) animSpeed = 2;
@@ -40,7 +26,6 @@ public class FireRain extends Attack {
             p.moveAtAngle(0);
             p.setMoveSpeed(moveSpeed);
             spawnProjectiles(p);
-            timeOfLastFire = System.currentTimeMillis();
-        }
+        });
     }
 }

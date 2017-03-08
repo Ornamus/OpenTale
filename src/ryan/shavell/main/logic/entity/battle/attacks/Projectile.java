@@ -3,6 +3,8 @@ package ryan.shavell.main.logic.entity.battle.attacks;
 import ryan.shavell.main.render.Drawable;
 import ryan.shavell.main.resources.Animation;
 import ryan.shavell.main.resources.ImageLoader;
+import ryan.shavell.main.stuff.Log;
+
 import java.awt.*;
 import java.awt.image.BufferedImage;
 
@@ -20,7 +22,6 @@ public class Projectile implements Drawable {
     protected BufferedImage frame = null;
 
     protected double moveSpeed = 2;
-    protected boolean rotateToAngle = false;
 
     protected boolean movingAtAngle = false;
 
@@ -30,22 +31,28 @@ public class Projectile implements Drawable {
 
     protected Rectangle hitbox = null;
 
-    public Projectile(int x, int y, String img) {
+    public Projectile(double x, double y, String img) {
         this(x, y, ImageLoader.getImage(img));
     }
 
-    public Projectile(int x, int y, BufferedImage img) {
+    public Projectile(double x, double y, BufferedImage img) {
         this.x = x;
         this.y = y;
         oldX = x;
         oldY = y;
-        if (img != null) animation = new Animation(0, img);
+        if (img != null) {
+            animation = new Animation(0, img);
+            frame = animation.getImageWithoutIncrement();
+        }
     }
 
-    public Projectile(int x, int y, Animation a) {
+    public Projectile(double x, double y, Animation a) {
         this.x = x;
         this.y = y;
-        if (a != null) animation = a;
+        if (a != null) {
+            animation = a;
+            frame = a.getImageWithoutIncrement();
+        }
     }
 
     public Projectile setMoveSpeed(double speed) {
@@ -56,7 +63,6 @@ public class Projectile implements Drawable {
     public Projectile moveAtAngle(double angle) {
         this.angle = angle;
         movingAtAngle = true;
-        rotateToAngle = true;
         return this;
     }
 
@@ -103,16 +109,24 @@ public class Projectile implements Drawable {
         return (int) Math.round(y);
     }
 
-    public Rectangle getHitbox() {
-        if (hitbox == null || (oldX != x || oldY != y)) {
-            //if (rotateToAngle) {
+    public double getWidth() {
+        return frame.getWidth();
+    }
 
-            //} else {
-                if (frame != null) {
-                    hitbox = new Rectangle(getXRound() + hitbox_niceness, getYRound() + hitbox_niceness, frame.getWidth() - (hitbox_niceness * 2), frame.getHeight() - (hitbox_niceness * 2));
-                }
-            //}
+    public double getHeight() {
+        return frame.getHeight();
+    }
+
+    public Rectangle getHitbox() {
+        //TODO: account for rotating hitbox to match sprite
+        if (hitbox == null || (oldX != x || oldY != y)) {
+            if (frame != null) {
+                hitbox = new Rectangle(getXRound() + hitbox_niceness, getYRound() + hitbox_niceness, frame.getWidth() - (hitbox_niceness * 2), frame.getHeight() - (hitbox_niceness * 2));
+            } else {
+                Log.d("FRAME IS NULL!");
+            }
         }
+        if (hitbox == null) Log.d("RETURNING NULL HITBOX!");
         return hitbox;
     }
 
@@ -131,10 +145,6 @@ public class Projectile implements Drawable {
     @Override
     public void draw(Graphics2D g) {
         frame = animation.getImage();
-        //if (rotateToAngle) {
-            //g.drawImage(Utils.rotate(frame, angle), getXRound(), getYRound(), null);
-        //} else {
-            g.drawImage(frame, getXRound(), getYRound(), null);
-        //}
+        g.drawImage(frame, getXRound(), getYRound(), null);
     }
 }

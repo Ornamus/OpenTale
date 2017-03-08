@@ -2,6 +2,7 @@ package ryan.shavell.main.logic.entity.overworld;
 
 import ryan.shavell.main.core.Game;
 import ryan.shavell.main.core.Main;
+import ryan.shavell.main.core.player.PlayerInfo;
 import ryan.shavell.main.dialogue.DialogBox;
 import ryan.shavell.main.dialogue.actions.*;
 import ryan.shavell.main.logic.InputTaker;
@@ -17,6 +18,7 @@ import ryan.shavell.main.resources.SpriteSheet;
 import ryan.shavell.main.stuff.Utils;
 import java.awt.*;
 import java.awt.event.KeyEvent;
+import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -234,9 +236,9 @@ public class Overworld implements Drawable, InputTaker {
 
             g.drawImage(SoulType.NORMAL.getImage(), (int) Math.round(currX), (int) Math.round(currY), null);
         } else if (heartTicks > 0) {
-            //TODO: render on player's center
-            startX = player.getX() * 2;
-            startY = player.getY() * 2;
+            //BufferedImage soul = PlayerInfo.soulType.getImage();
+            startX = ((player.getX() * 2) + (player.getWidth() / 2));// - (soul.getWidth() / 2);
+            startY = ((player.getY() * 2) + (player.getHeight() / 2)) + 10;// - (soul.getWidth() / 2);
             currX = startX;
             currY = startY;
             g.drawImage(SoulType.NORMAL.getImage(), (int) Math.round(currX), (int) Math.round(currY), null);

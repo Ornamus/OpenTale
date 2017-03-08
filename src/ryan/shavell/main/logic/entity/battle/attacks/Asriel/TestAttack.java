@@ -17,10 +17,5 @@ public class TestAttack extends Attack {
         for (int i=0; i<10; i++) {
             spawnProjectile(new ProjectileStar(150, 400 - Utils.randomNumber(0, 200), 90 + Utils.randomNumber(-45, 45)));
         }
-        /*
-        spawnProjectile(new Projectile(200, 200, 0, "star"));
-        spawnProjectile(new Projectile(200, 300, 90, "star"));
-        spawnProjectile(new Projectile(200, 100, 45, "star"));
-        */
     }
 }
