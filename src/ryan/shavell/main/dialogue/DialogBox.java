@@ -4,9 +4,11 @@ import ryan.shavell.main.core.Main;
 import ryan.shavell.main.core.player.PlayerInfo;
 import ryan.shavell.main.logic.InputTaker;
 import ryan.shavell.main.render.Drawable;
+import ryan.shavell.main.resources.Animation;
 import ryan.shavell.main.resources.AudioHandler;
 import java.awt.*;
 import java.awt.event.KeyEvent;
+import java.awt.image.BufferedImage;
 
 /**
  * Displays text and options within a chat box. Uses ScrollText for all fancy text things.
@@ -29,6 +31,9 @@ public class DialogBox implements Drawable, InputTaker {
     private int x, y;
     private ScrollText text;
     private int scrollSpeed = ScrollText.SCROLL_NORMAL;
+
+    private Animation portrait = null;
+    private int doneFrame = -1;
 
     private String lastText = null;
 
@@ -53,8 +58,6 @@ public class DialogBox implements Drawable, InputTaker {
         text = new ScrollText(primaryTextPoint.x, primaryTextPoint.y);
         text.setWidthLimit(dialogWidth - x);
 
-        System.out.println("Text: " + primaryTextPoint.getX());
-
         optionOnePoint = new Point(primaryTextPoint.x + 48, primaryTextPoint.y); //formerly 30
         optionTwoPoint = new Point(optionOnePoint.x, optionOnePoint.y + 32);
         optionThreePoint = new Point(optionOnePoint.x + 256, optionOnePoint.y); //formerly 250
@@ -73,6 +76,12 @@ public class DialogBox implements Drawable, InputTaker {
         optionFour.setVisuals(Color.WHITE, Main.DIALOGUE);
 
         //setVisuals(Color.WHITE, Main.DIALOGUE);
+    }
+
+    private void setPrimaryText(int textX, int textY) {
+        //primaryTextPoint = new Point(textX, textY);
+        text = new ScrollText(textX, textY);
+        text.setWidthLimit(dialogWidth - x - (textX - primaryTextPoint.x));
     }
 
     /**
@@ -139,6 +148,18 @@ public class DialogBox implements Drawable, InputTaker {
             }
         }
         optionSelected = 0;
+    }
+
+    public void setPortrait(Animation a, int doneFrame) {
+        if (a != null) {
+            a.reset();
+            setPrimaryText(primaryTextPoint.x + 118, primaryTextPoint.y);
+            portrait = a;
+            this.doneFrame = doneFrame;
+        } else {
+            setPrimaryText(primaryTextPoint.x, primaryTextPoint.y);
+            portrait = null;
+        }
     }
 
     /**
@@ -304,6 +325,12 @@ public class DialogBox implements Drawable, InputTaker {
     @Override
     public void draw(Graphics2D g) {
         if (renderBackground) drawBackground(g);
+        if (portrait != null && !isOptions()) {
+            BufferedImage frame = isScrolling() ? portrait.getImage() : portrait.getFrame(doneFrame);
+            int pX = (x + 65) - (frame.getWidth() / 2);
+            int pY = (y + 65) - (frame.getHeight() / 2);
+            g.drawImage(frame, pX, pY, null);
+        }
         text.draw(g);
         optionOne.draw(g);
         optionTwo.draw(g);

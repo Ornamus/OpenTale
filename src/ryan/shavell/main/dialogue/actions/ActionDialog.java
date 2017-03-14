@@ -2,12 +2,21 @@ package ryan.shavell.main.dialogue.actions;
 
 import ryan.shavell.main.core.Game;
 import ryan.shavell.main.dialogue.DialogBox;
+import ryan.shavell.main.resources.Animation;
 
 public class ActionDialog extends Action {
 
     public ActionDialog(String text) {
+        this(text, null);
+    }
+
+    public ActionDialog(String text, String voice) {
         super(()-> {
-            Game.getDialogBox().setText(text, true);
+            if (voice == null) {
+                Game.getDialogBox().setText(text, true);
+            } else {
+                Game.getDialogBox().setText(text, voice);
+            }
         }, ()-> {
             DialogBox box = Game.getDialogBox();
             boolean done = box.shouldMoveOn();
@@ -18,9 +27,14 @@ public class ActionDialog extends Action {
         });
     }
 
-    public ActionDialog(String text, String voice) {
+    public ActionDialog(String text, String voice, Animation portrait, int doneFrame) {
         super(()-> {
-            Game.getDialogBox().setText(text, voice);
+            Game.getDialogBox().setPortrait(portrait, doneFrame);
+            if (voice == null) {
+                Game.getDialogBox().setText(text, true);
+            } else {
+                Game.getDialogBox().setText(text, voice);
+            }
         }, ()-> {
             DialogBox box = Game.getDialogBox();
             boolean done = box.shouldMoveOn();

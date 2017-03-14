@@ -1,6 +1,6 @@
 package ryan.shavell.main.render;
 
-import ryan.shavell.main.logic.entity.overworld.OverworldEntity;
+import ryan.shavell.main.logic.overworld.OverworldEntity;
 
 public class BasicRenderedThing extends OverworldEntity {
 

@@ -10,7 +10,7 @@ import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
 import java.util.List;
 
-//TODO: DOES ONLY PAPYRUS HAVE SHAKY TEXT?
+//TODO: a speed between SCROLL_FAST and SCROLL_NORMAL
 
 public class ScrollText implements Drawable {
 
@@ -37,8 +37,8 @@ public class ScrollText implements Drawable {
     private boolean calculatedBreaks = false;
     private List<String> breaks = new ArrayList<>();
 
-    private Character[] delayCharacters = {',', '.', '?', '!'};
-    private Character[] noVoiceCharacters = {' ', '-', '\'', ',', '*'};
+    private Character[] delayCharacters = {/*',', '.', '?', '!'*/};
+    private Character[] noVoiceCharacters = {' ', '-', '\'', ',', /*'*'*/};
 
     public ScrollText(int x, int y) {
         this.x = x;
@@ -99,15 +99,18 @@ public class ScrollText implements Drawable {
         setText(text, speed);
     }
 
+    boolean addedChar = false;
+
     @Override
     public void tick() {
         if (currentCharacter != -1) {
             if (waitedTicks == speed) {
+                addedChar = true;
                 waitedTicks = 0;
                 currentCharacter++;
                 if (currentCharacter == (text.length())) {
                     currentCharacter = -1;
-                } else {                  
+                } else {
                     if (currentCharacter - 1 >= 0 && currentCharacter - 1 < text.length()) {
                         char c = text.charAt(currentCharacter - 1);
                         for (Character c2 : delayCharacters) {
@@ -119,6 +122,7 @@ public class ScrollText implements Drawable {
                     }
                 }
             } else {
+                addedChar = false;
                 waitedTicks++;
             }
         }
@@ -138,9 +142,12 @@ public class ScrollText implements Drawable {
         if (recalculate) calculatedBreaks = false;
         g.setFont(font);
         while (text.contains("[") && text.contains("]")) {
-            int start = text.indexOf('[');
-            int end = text.indexOf(']');
-            String metadata = text.substring(start + 1, end);
+            String textCopy = text;
+            textCopy = textCopy.replace("/n", "");
+
+            int start = textCopy.indexOf('[');
+            int end = textCopy.indexOf(']');
+            String metadata = textCopy.substring(start + 1, end);
 
             //while ((metadata = text.substring(start + 1, end)).length() > 0) {
             int argIndex = metadata.indexOf("(");
@@ -276,7 +283,8 @@ public class ScrollText implements Drawable {
                 index++;
             }
 
-            if (waitedTicks == 0) {
+            if (addedChar) {
+            //if (waitedTicks == 0) {
                 boolean voice = true;
                 char c = text.charAt(currentCharacter);
                 for (Character c2 : noVoiceCharacters) {

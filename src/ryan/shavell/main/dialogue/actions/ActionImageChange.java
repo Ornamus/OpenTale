@@ -1,6 +1,6 @@
 package ryan.shavell.main.dialogue.actions;
 
-import ryan.shavell.main.logic.entity.battle.Arena;
+import ryan.shavell.main.logic.battle.Arena;
 import ryan.shavell.main.resources.Animation;
 
 import java.awt.image.BufferedImage;

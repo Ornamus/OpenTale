@@ -1,6 +1,8 @@
 package ryan.shavell.main.render;
 
-import ryan.shavell.main.logic.entity.overworld.Overworld;
+import ryan.shavell.main.logic.overworld.Overworld;
+import ryan.shavell.main.resources.ImageLoader;
+import ryan.shavell.main.resources.SpriteSheet;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;

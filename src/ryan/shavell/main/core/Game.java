@@ -2,8 +2,8 @@ package ryan.shavell.main.core;
 
 import ryan.shavell.main.dialogue.DialogBox;
 import ryan.shavell.main.dialogue.actions.Action;
-import ryan.shavell.main.logic.entity.battle.Arena;
-import ryan.shavell.main.logic.entity.overworld.Overworld;
+import ryan.shavell.main.logic.battle.Arena;
+import ryan.shavell.main.logic.overworld.Overworld;
 import ryan.shavell.main.stuff.Log;
 
 import java.util.List;

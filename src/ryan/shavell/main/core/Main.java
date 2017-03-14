@@ -37,7 +37,6 @@ public class Main extends JFrame {
         setTitle("OPENTALE");
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         AudioHandler.init();
-        //AudioHandler.play("Home", true);
 
         setVisible(true);
     }
