@@ -2,14 +2,17 @@ package ryan.shavell.main.logic.battle.attacks;
 
 import ryan.shavell.main.scripting.Script;
 
+//TODO: somehow load up script sooner to prevent hang the first time this is used
+
 public class JSAttack extends Attack {
 
     Script script;
 
-    public JSAttack(String code) {
+    public JSAttack(String script) {
         try {
-            script = Script.toScript(code);
-            script.put("attack", this);
+            this.script = Script.loadScript(script);
+            this.script.put("attack", this);
+            this.script.invokeMethod("init");
         } catch (Exception e) {
             e.printStackTrace();
         }

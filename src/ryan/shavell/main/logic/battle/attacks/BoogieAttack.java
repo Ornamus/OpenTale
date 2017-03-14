@@ -4,9 +4,11 @@ import ryan.shavell.main.core.Game;
 import ryan.shavell.main.dialogue.actions.Action;
 import ryan.shavell.main.dialogue.actions.ActionImageChange;
 import ryan.shavell.main.dialogue.actions.ActionTalk;
+import ryan.shavell.main.dialogue.actions.ActionWait;
 import ryan.shavell.main.logic.battle.Arena;
 import ryan.shavell.main.logic.battle.encounters.Boogie;
 import ryan.shavell.main.resources.Animation;
+import ryan.shavell.main.resources.AudioHandler;
 import ryan.shavell.main.resources.SpriteSheet;
 
 import java.util.Collections;
@@ -35,13 +37,24 @@ public class BoogieAttack extends Attack {
                 new ActionTalk("Okay.../nHere it comes...", voice),
                 new ActionImageChange(((Boogie)Arena.getMob()).sheet.get(1, 0)),
                 new Action(()-> {
-                    Projectile p = new Projectile(250, 175, "boogie/breath") {
+                    Projectile p = new Projectile(255, 175, "boogie/breath") { //250, 175
                         long spawn = System.currentTimeMillis();
+                        double momentum = 1.5;
+                        float trans = 1f;
 
                         @Override
                         public void tick() {
                             super.tick();
-                            if (System.currentTimeMillis() - spawn > 2000) {
+                            long timeElapsed = System.currentTimeMillis() - spawn;
+                            setMoveSpeed(momentum);
+                            momentum -= .05;
+                            if (momentum < 0) {
+                                momentum = 0;
+                                trans -= .05;
+                                if (trans < 0) trans = 0;
+                                setTransparency(trans);
+                            }
+                            if (timeElapsed > 1750) {
                                 setShouldDelete(true);
                                 Collections.addAll(Game.getActionBuffer(), new ActionImageChange(((Boogie)Arena.getMob()).sheet.get(0, 0)),
                                         new Action(()-> {
@@ -51,7 +64,10 @@ public class BoogieAttack extends Attack {
                                                 public void onCollision() {
                                                     setShouldDelete(true);
                                                     Game.getActionBuffer().clear();
-                                                    Collections.addAll(Game.getActionBuffer(), new ActionImageChange(((Boogie)Arena.getMob()).sheet.get(2, 0)),
+                                                    Collections.addAll(Game.getActionBuffer(),
+                                                            new Action(()-> AudioHandler.stopSong("Boogie")),
+                                                            new ActionImageChange(((Boogie)Arena.getMob()).sheet.get(2, 0)),
+                                                            new ActionWait(0.75),
                                                             new ActionTalk("Huh./nThat did more than I expected.", voice),
                                                             new ActionImageChange(((Boogie)Arena.getMob()).sheet.get(0, 0)),
                                                             new ActionTalk("Okay.", voice),
@@ -69,10 +85,9 @@ public class BoogieAttack extends Attack {
                                         new ActionTalk("Dodge it if you want. Or not.", voice));
                             }
                         }
-
                     };
                     p.moveAtAngle(-45);
-                    p.setMoveSpeed(.5);
+                    //p.setMoveSpeed(.5);
                     spawnProjectile(p);
                 }, ()->true));
     }

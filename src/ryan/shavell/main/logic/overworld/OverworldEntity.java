@@ -17,6 +17,7 @@ public class OverworldEntity implements Drawable {
 
     protected int x, y;
     private Animation anim;
+    private boolean drawHitbox = false;
 
     public OverworldEntity(int x, int y, String imageName) {
         this(x, y, ImageLoader.getImage(imageName));
@@ -34,7 +35,7 @@ public class OverworldEntity implements Drawable {
 
     public Rectangle getCollisionBox() {
         BufferedImage frame = anim.getImageWithoutIncrement();
-        return new Rectangle(x, y + (frame.getWidth()), frame.getWidth(), Utils.round(frame.getHeight() / 2));
+        return new Rectangle(x, y + Utils.round(frame.getWidth() * (2.0/3.0)), frame.getWidth(), Utils.round(frame.getHeight() / 3));
     }
 
     public List<Action> onInteract() {
@@ -42,9 +43,17 @@ public class OverworldEntity implements Drawable {
         return actions;
     }
 
+    public void setDrawHitbox(boolean b) {
+        drawHitbox = b;
+    }
+
     @Override
     public void draw(Graphics2D g) {
         g.drawImage(anim.getImage(), x, y, null);
+        if (drawHitbox) {
+            g.setColor(Color.BLUE);
+            g.draw(getCollisionBox());
+        }
     }
 
     @Override

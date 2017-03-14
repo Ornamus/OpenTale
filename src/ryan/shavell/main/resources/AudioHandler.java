@@ -8,6 +8,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+//TODO: don't allow the same looping track to be started if it already exists
+//TODO: Function to stop all tracks already playing
+
 public class AudioHandler implements LineListener {
 
     private static Map<String, Clip> clips = new HashMap<>();
@@ -20,8 +23,6 @@ public class AudioHandler implements LineListener {
     private String audioFileName;
     private boolean loop = false, playCompleted = false;
     private Clip audioClip = null;
-
-    //TODO: Function to stop all/certain tracks already playing
 
     private AudioHandler(String audioName, boolean loop) {
         this.audioFileName = audioName;

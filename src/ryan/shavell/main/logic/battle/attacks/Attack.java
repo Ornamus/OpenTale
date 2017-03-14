@@ -35,6 +35,11 @@ public abstract class Attack implements Drawable {
         this.height = height;
     }
 
+    public void setBounds(int width, int height) {
+        this.width = width;
+        this.height = height;
+    }
+
     public void start() {
         for (TimeAction a : actions) {
             a.timeOfLastLoop = System.currentTimeMillis() - a.getOffsetForDelay();

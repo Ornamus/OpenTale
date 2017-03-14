@@ -29,6 +29,8 @@ public class Projectile implements Drawable {
 
     private int damage = 3;
 
+    private float transparency = 1f;
+
     protected Rectangle hitbox = null;
 
     public Projectile(double x, double y, String img) {
@@ -123,6 +125,10 @@ public class Projectile implements Drawable {
         hitbox_niceness = i;
     }
 
+    public void setTransparency(float f) {
+        transparency = f;
+    }
+
     public Shape getHitbox() {
         //TODO: account for rotating hitbox to match sprite
         if (hitbox == null || (oldX != x || oldY != y)) {
@@ -155,6 +161,8 @@ public class Projectile implements Drawable {
     @Override
     public void draw(Graphics2D g) {
         frame = animation.getImage();
+        g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, transparency));
         g.drawImage(frame, getXRound(), getYRound(), null);
+        g.setComposite(AlphaComposite.getInstance(AlphaComposite.SRC_OVER, 1f));
     }
 }

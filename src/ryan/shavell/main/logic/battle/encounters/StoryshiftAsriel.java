@@ -89,7 +89,7 @@ public class StoryshiftAsriel extends Mob {
             if (getLastAction().equals("Flirt")) {
                 a = new StarBlazing(true);
             } else {
-                a = new FireRain();
+                a = new JSAttack("attacks/asriel_fire_rain");
                 //a = new JSAttack("var start = function(){}; var tick = function(){print(\"TICK?\");};");
             }
         } else {
@@ -101,7 +101,7 @@ public class StoryshiftAsriel extends Mob {
                 }
             } else {
                 int random = Utils.randomNumber(0, 5);
-                if (random == 0) a = new FireRain();
+                if (random == 0) a = new JSAttack("attacks/asriel_fire_rain");
                 else if (random == 1) a = new StarRain();
                 else if (random == 2) a = new TestAttack2();
                 else if (random == 3) a = new TestAttack3();

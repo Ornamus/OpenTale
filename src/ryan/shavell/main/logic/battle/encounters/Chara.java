@@ -55,11 +55,13 @@ public class Chara extends Mob {
     public Attack getNextAttack() {
         Attack a = null;
         int random = Utils.randomNumber(0, 4);
+        /*
         if (random == 0) a = new FireRain();
         else if (random == 1) a = new TestAttack();
         else if (random == 2) a = new TestAttack2();
         else if (random == 3) a = new TestAttack3();
         else if (random == 4) a = new BlueAttack();
+        */
         a = new NothingAttack();
         return a;
     }

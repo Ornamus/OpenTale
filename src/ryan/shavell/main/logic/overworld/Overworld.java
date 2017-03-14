@@ -37,14 +37,14 @@ public class Overworld implements Drawable, InputTaker {
     public Overworld() {
         map = new Map("ruins");
 
-        player = new OverworldPlayer(30, 30); //200, 150
+        player = new OverworldPlayer(160, 185); //200, 150
         //entities.add(new BasicRenderedThing(0, 0, "home"));
         //entities.add(new OverworldEntity(100, 100, new SpriteSheet(16, 28, 4, 1, "asriel_overworld").get(0,0)));
         //entities.add(new OverworldAsriel(100, 100));
-        entities.add(new OverworldBoogie(92, 125));
+        entities.add(new OverworldAsriel(150, 115));
         entities.add(player);
 
-        dialogBox.setPortrait(new Animation(1, ImageLoader.getImage("as_face")), 0);
+        //dialogBox.setPortrait(new Animation(1, ImageLoader.getImage("as_face")), 0);
 
         Game.setState(Game.State.OVERWORLD);
 
@@ -104,7 +104,7 @@ public class Overworld implements Drawable, InputTaker {
     @Override
     public void onKeyPress(KeyEvent e) {
         int keyCode = e.getKeyCode();
-        if (keyCode == KeyEvent.VK_Z && !blockPlayerMovement()) {
+        if (keyCode == KeyEvent.VK_Z && !blockPlayerMovement() && !doingEncounterAnim) {
             int dir = player.getDirection();
             Rectangle interactionBox = null;
             Rectangle hitbox = player.getCollisionBox();
@@ -129,7 +129,7 @@ public class Overworld implements Drawable, InputTaker {
                     if (!(ent instanceof OverworldPlayer) && interactionBox.intersects(ent.getCollisionBox())) {
                         List<Action> interact = ent.onInteract();
                         if (!interact.isEmpty()) {
-                            Log.d("Interacted with " + ent.toString());
+                            //Log.d("Interacted with " + ent.toString());
                             actions.clear();
                             actions = interact;
                             break;
@@ -172,6 +172,23 @@ public class Overworld implements Drawable, InputTaker {
 
     public static DialogBox getDialogBox() {
         return dialogBox;
+    }
+
+    public static List<Rectangle> getAllCollisions() {
+        List<Rectangle> rects = new ArrayList<>();
+        for (Rectangle2D.Double d : map.getCollisions()) {
+            rects.add(d.getBounds());
+        }
+        for (OverworldEntity e : self.entities) {
+            if (!(e instanceof OverworldPlayer)) {
+                rects.add(e.getCollisionBox());
+            }
+        }
+        return rects;
+    }
+
+    public static Map getMap() {
+        return map;
     }
 
     //All variables and functions related to the encounter start animation
@@ -247,23 +264,6 @@ public class Overworld implements Drawable, InputTaker {
             heartTicks --;
             if (heartTicks < 0) heartTicks = 0;
         }
-    }
-
-    public static List<Rectangle> getAllCollisions() {
-        List<Rectangle> rects = new ArrayList<>();
-        for (Rectangle2D.Double d : map.getCollisions()) {
-            rects.add(d.getBounds());
-        }
-        for (OverworldEntity e : self.entities) {
-            if (!(e instanceof OverworldPlayer)) {
-                rects.add(e.getCollisionBox());
-            }
-        }
-        return rects;
-    }
-
-    public static Map getMap() {
-        return map;
     }
 }
 

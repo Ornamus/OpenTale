@@ -5,6 +5,7 @@ import ryan.shavell.main.dialogue.actions.Action;
 import ryan.shavell.main.logic.battle.Mob;
 import ryan.shavell.main.logic.battle.attacks.Attack;
 import ryan.shavell.main.logic.battle.attacks.BoogieAttack;
+import ryan.shavell.main.logic.battle.attacks.JSAttack;
 import ryan.shavell.main.resources.Animation;
 import ryan.shavell.main.resources.SpriteSheet;
 import java.awt.*;
@@ -32,7 +33,7 @@ public class Boogie extends Mob {
 
     @Override
     public String getNewTurnText() {
-        return "boogie";
+        return "* How are you reading this? :(";
     }
 
     @Override

@@ -37,7 +37,7 @@ public class ScrollText implements Drawable {
     private boolean calculatedBreaks = false;
     private List<String> breaks = new ArrayList<>();
 
-    private Character[] delayCharacters = {/*',', '.', '?', '!'*/};
+    private Character[] delayCharacters = {',', '.', '?', '!'};
     private Character[] noVoiceCharacters = {' ', '-', '\'', ',', /*'*'*/};
 
     public ScrollText(int x, int y) {
@@ -88,8 +88,6 @@ public class ScrollText implements Drawable {
         return this;
     }
 
-    private String test = "I think you are going to have a [color(150,0,0)BAD TIME].";
-
     public ScrollText setWidthLimit(int lim) {
         widthLimit = lim;
         return this;
@@ -103,16 +101,17 @@ public class ScrollText implements Drawable {
 
     @Override
     public void tick() {
+        String textCopy = getDisplayText();
         if (currentCharacter != -1) {
             if (waitedTicks == speed) {
                 addedChar = true;
                 waitedTicks = 0;
                 currentCharacter++;
-                if (currentCharacter == (text.length())) {
+                if (currentCharacter == (textCopy.length())) {
                     currentCharacter = -1;
                 } else {
-                    if (currentCharacter - 1 >= 0 && currentCharacter - 1 < text.length()) {
-                        char c = text.charAt(currentCharacter - 1);
+                    if (currentCharacter - 1 >= 0 && currentCharacter - 1 < textCopy.length()) {
+                        char c = textCopy.charAt(currentCharacter - 1);
                         for (Character c2 : delayCharacters) {
                             if (c == c2) {
                                 waitedTicks -= 3;
@@ -286,13 +285,16 @@ public class ScrollText implements Drawable {
             if (addedChar) {
             //if (waitedTicks == 0) {
                 boolean voice = true;
-                char c = text.charAt(currentCharacter);
-                for (Character c2 : noVoiceCharacters) {
-                    if (c == c2) {
-                        voice = false;
-                        break;
+                String displayText = getDisplayText();
+                if (currentCharacter < displayText.length()) {
+                    char c = displayText.charAt(currentCharacter);
+                    for (Character c2 : noVoiceCharacters) {
+                        if (c == c2) {
+                            voice = false;
+                            break;
+                        }
                     }
-                }
+                } else voice = false;
                 if (voice) {
                     AudioHandler.playEffect(typeSound);
                 }
@@ -330,6 +332,14 @@ public class ScrollText implements Drawable {
         } else {
             g.drawString(string, x, y);
         }
+    }
+
+    private String getDisplayText() {
+        String textCopy = "";
+        for (String s : breaks) {
+            textCopy += s;
+        }
+        return textCopy;
     }
 
     private class TextMetadata {
