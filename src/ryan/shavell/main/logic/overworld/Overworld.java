@@ -37,10 +37,9 @@ public class Overworld implements Drawable, InputTaker {
     public Overworld() {
         map = new Map("ruins");
 
-        player = new OverworldPlayer(160, 185); //200, 150
-        //entities.add(new BasicRenderedThing(0, 0, "home"));
-        //entities.add(new OverworldEntity(100, 100, new SpriteSheet(16, 28, 4, 1, "asriel_overworld").get(0,0)));
-        //entities.add(new OverworldAsriel(100, 100));
+        player = new OverworldPlayer(160, 185);
+
+        entities.addAll(map.getEntities());
         entities.add(new OverworldAsriel(150, 115));
         entities.add(player);
 
@@ -104,26 +103,27 @@ public class Overworld implements Drawable, InputTaker {
     @Override
     public void onKeyPress(KeyEvent e) {
         int keyCode = e.getKeyCode();
+
         if (keyCode == KeyEvent.VK_Z && !blockPlayerMovement() && !doingEncounterAnim) {
             int dir = player.getDirection();
-            Rectangle interactionBox = null;
             Rectangle hitbox = player.getCollisionBox();
+            Rectangle interactionBox = null;
 
             int x = hitbox.x;
             int y = hitbox.y;
-            int x2 = Utils.round(hitbox.x + hitbox.getWidth());
-            int y2 = Utils.round(hitbox.y + hitbox.getHeight());
+            int width = hitbox.width;
+            int height = hitbox.height;
 
-            //TODO: investigate abnormally tall left interaction box
             if (dir == 0) {
-                interactionBox = new Rectangle(x, y - 5, x2, y);
+                interactionBox = new Rectangle(x, y - 5, width, 5);
             } else if (dir == 1) {
-                interactionBox = new Rectangle(x - 5, y, x, y2);
+                interactionBox = new Rectangle(x - 5, y, 5, height);
             } else if (dir == 2) {
-                interactionBox = new Rectangle(x2 + 5, y, x2, y2);
+                interactionBox = new Rectangle(x + width, y, 5, height);
             } else if (dir == 3) {
-                interactionBox = new Rectangle(x, y + 5, x2, y);
+                interactionBox = new Rectangle(x, y + height, width, 5);
             }
+
             if (interactionBox != null) {
                 for (OverworldEntity ent : entities) {
                     if (!(ent instanceof OverworldPlayer) && interactionBox.intersects(ent.getCollisionBox())) {

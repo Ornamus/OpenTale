@@ -10,11 +10,13 @@ import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
 
+//TODO: Make dialog box use default sound if a sound is not provided each text set
+
 /**
  * Displays text and options within a chat box. Uses ScrollText for all fancy text things.
  *
  * @author Ornamus
- * @version 2017.3.7
+ * @version 2017.3.14
  */
 public class DialogBox implements Drawable, InputTaker {
 

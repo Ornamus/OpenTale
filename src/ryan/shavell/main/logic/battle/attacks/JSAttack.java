@@ -2,7 +2,7 @@ package ryan.shavell.main.logic.battle.attacks;
 
 import ryan.shavell.main.scripting.Script;
 
-//TODO: somehow load up script sooner to prevent hang the first time this is used
+//TODO: somehow load up script sooner to prevent hang the first time this is used. Might require reusing attack objects/attack templates that are loaded sooner
 
 public class JSAttack extends Attack {
 

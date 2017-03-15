@@ -3,6 +3,8 @@ package ryan.shavell.main.logic.overworld;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import ryan.shavell.main.core.Main;
+import ryan.shavell.main.dialogue.actions.Action;
+import ryan.shavell.main.dialogue.actions.ActionDialog;
 import ryan.shavell.main.render.Drawable;
 import ryan.shavell.main.resources.ImageLoader;
 import ryan.shavell.main.resources.SpriteSheet;
@@ -21,6 +23,7 @@ public class Map implements Drawable {
     private List<SpriteSheet> tilesets = new ArrayList<>();
     private HashMap<Point, Integer> tiles = new HashMap<>();
     private List<Rectangle2D.Double> collisions = new ArrayList<>();
+    private List<OverworldEntity> entities = new ArrayList<>();
 
     public Map(String mapJson) {
         try {
@@ -77,7 +80,39 @@ public class Map implements Drawable {
                     for (JSONObject rect : Utils.getObjects(l.getJSONArray("objects"))) {
                         Rectangle2D.Double rectangle = new Rectangle2D.Double(rect.getDouble("x"), rect.getDouble("y"),
                                 rect.getDouble("width"), rect.getDouble("height"));
-                        collisions.add(rectangle);
+                        String ty = rect.getString("type");
+                        if (ty.equalsIgnoreCase("collision_box")) {
+                            collisions.add(rectangle);
+                        } else if (ty.equalsIgnoreCase("interactable")) {
+                            OverworldEntity e = new OverworldEntity(Utils.round(rectangle.x), Utils.round(rectangle.y), "boogie/boogie_portrait"){ //image doesn't matter
+                                final Rectangle2D.Double hitbox = rectangle;
+                                final JSONObject properties = rect.getJSONObject("properties");
+
+                                @Override
+                                public List<Action> onInteract() {
+                                    List<Action> actions = new ArrayList<>();
+                                    if (!properties.isNull("script")) {
+                                        //TODO: get actions from script
+                                    } else if (!properties.isNull("dialog")) {
+                                        String[] parts = properties.getString("dialog").split("NEWLINE");
+                                        for (String s : parts) {
+                                            actions.add(new ActionDialog(s));
+                                        }
+                                    }
+                                    return actions;
+                                }
+
+                                @Override
+                                public void draw(Graphics2D g) {}
+
+                                @Override
+                                public Rectangle getCollisionBox() {
+                                    return hitbox.getBounds();
+                                }
+                            };
+                            e.setDrawHitbox(true);
+                            entities.add(e);
+                        }
                     }
                 }
             }
@@ -122,5 +157,9 @@ public class Map implements Drawable {
 
     public List<Rectangle2D.Double> getCollisions() {
         return new ArrayList<>(collisions);
+    }
+
+    public List<OverworldEntity> getEntities() {
+        return new ArrayList<>(entities);
     }
 }

@@ -1,5 +1,6 @@
 package ryan.shavell.main.scripting;
 
+import org.omg.CORBA.IMP_LIMIT;
 import ryan.shavell.main.core.Game;
 import ryan.shavell.main.core.Main;
 import ryan.shavell.main.dialogue.actions.Action;
@@ -15,11 +16,13 @@ import ryan.shavell.main.stuff.Utils;
 import javax.script.Invocable;
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
+import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 
 public class Script {
     private ScriptEngineManager engineManager;
@@ -51,27 +54,43 @@ public class Script {
         engine = engineManager.getEngineByName("nashorn");
         invocable = (Invocable) engine;
 
-        loadClass(Collections.class);
-        loadClass(Log.class);
-        loadClass(Utils.class);
-        loadClass(Main.class);
-        loadClass(Game.class);
-        loadClass(Projectile.class);
-        loadClass(ProjectileStar.class); //TODO: remove?
-        loadClass(SpriteSheet.class);
-        loadClass(Animation.class);
-        loadClass(ImageLoader.class);
-        loadClass(AudioHandler.class);
-        loadClass(BufferedImage.class);
-        loadClass(ArrayList.class);
-        for (Class c : Action.getCoreActions()) {
-            loadClass(c);
-        }
+        List<Class> classes = new ArrayList<>();
+        Collections.addAll(classes, new Class[]{
+                Collections.class,
+                Log.class,
+                Utils.class,
+                Main.class,
+                Game.class,
+                Projectile.class,
+                ProjectileStar.class,
+                SpriteSheet.class,
+                Animation.class,
+                ImageLoader.class,
+                AudioHandler.class,
+                BufferedImage.class,
+                ArrayList.class,
+                System.class
+        });
+
+        Collections.addAll(classes, Action.getCoreActions());
+        loadClasses(classes.toArray(new Class[classes.size()]));
     }
 
     public void loadClass(Class clazz) {
         try {
             engine.eval("var " + clazz.getSimpleName() + " = Java.type(\"" + clazz.getName() + "\");");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void loadClasses(Class... classes) {
+        String s = "";
+        for (Class c : classes) {
+            s += "var " + c.getSimpleName() + " = Java.type(\"" + c.getName() + "\");\n";
+        }
+        try {
+            engine.eval(s);
         } catch (Exception e) {
             e.printStackTrace();
         }
