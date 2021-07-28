@@ -17,7 +17,6 @@ import java.awt.image.BufferedImage;
 
 //TODO: figure out if the new y positioning is correct or not (is it always growing from the bottom, or centered until it's too big THEN growing from bottom?
 //TODO: resize box and show heart WHILE pre-attack mob dialog is happening instead of waiting until the dialog is complete
-//TODO: Figure out why holding Z makes blue hearts have input lag (might not actually be a thing?)
 
 /**
  * Contains all the logic and variables for handling monster attacks and SOUL stuff.
@@ -27,13 +26,13 @@ import java.awt.image.BufferedImage;
  */
 public class BattleBox implements Drawable, InputTaker {
 
-    private static final int SOUL_SPEED = 3;
-    private static final int RESIZE_SPEED = 20; //24
+    private static final double SOUL_SPEED = 3.75; //3
+    private static final int RESIZE_SPEED = 20;
 
     private boolean keyUp, keyLeft, keyRight, keyDown;
 
     private int x = 50, y = 251, width = 165, height = 140; //defaults
-    private int soulX, soulY;
+    private double soulX, soulY;
     private Rectangle hitbox = null;
     private Attack attack = null;
 
@@ -103,8 +102,8 @@ public class BattleBox implements Drawable, InputTaker {
                 init = true;
             }
             SoulType t = PlayerInfo.soulType;
-            int oldX = soulX;
-            int oldY = soulY;
+            double oldX = soulX;
+            double oldY = soulY;
             if (t == SoulType.NORMAL) {
                 if (keyUp) soulY -= SOUL_SPEED;
                 if (keyLeft) soulX -= SOUL_SPEED;
@@ -150,8 +149,8 @@ public class BattleBox implements Drawable, InputTaker {
 
             Rectangle box = getSoulHitbox();
             while (box.intersectsLine(left) || box.intersectsLine(right) || box.intersectsLine(top) || box.intersectsLine(bottom)) {
-                int diffOldX = soulX;
-                int diffOldY = soulY;
+                double diffOldX = soulX;
+                double diffOldY = soulY;
                 if (box.intersectsLine(left)) soulX++;
                 else if (box.intersectsLine(right)) soulX--;
                 else if (box.intersectsLine(top)) soulY++;
@@ -283,7 +282,7 @@ public class BattleBox implements Drawable, InputTaker {
     }
 
     public Point getSOUL() {
-        return new Point(soulX, soulY);
+        return new Point(Utils.round(soulX), Utils.round(soulY));
     }
 
     @Override
@@ -291,7 +290,7 @@ public class BattleBox implements Drawable, InputTaker {
         drawBox(g);
         if (!doingResize && (attack == null || !attack.isDone())) {
             BufferedImage i = immune ? PlayerInfo.soulType.getDamagedAnimation().getImage() : PlayerInfo.soulType.getImage();
-            g.drawImage(i, soulX, soulY, null);
+            g.drawImage(i, Utils.round(soulX), Utils.round(soulY), null);
             if (attack != null) attack.draw(g);
         }
     }
@@ -313,7 +312,7 @@ public class BattleBox implements Drawable, InputTaker {
 
     public Rectangle getSoulHitbox() {
         if (hitbox == null) {
-            hitbox = new Rectangle(soulX + 1, soulY + 1, 14, 14);
+            hitbox = new Rectangle(Utils.round(soulX + 1), Utils.round(soulY + 1), 14, 14);
         }
         return hitbox;
     }

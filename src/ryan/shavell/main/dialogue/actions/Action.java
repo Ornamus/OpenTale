@@ -3,6 +3,10 @@ package ryan.shavell.main.dialogue.actions;
 import java.util.HashMap;
 import java.util.function.BooleanSupplier;
 
+
+//TODO: ActionBlockPlayerInput and ActionEnablePlayerInput (or one action that can do both)
+//TODO: Some over-arching action handler that can be used across places like arena, overworld, and more with little re-implementation
+
 public class Action {
 
     private static HashMap<String, Object> variables = new HashMap<>();

@@ -38,6 +38,10 @@ public class Main extends JFrame {
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         AudioHandler.init();
 
+        //TODO: when fullscreen, g.scale() up quite a bit to get the desired game appearance OR http://stackoverflow.com/questions/11884035/how-to-put-jframe-into-fullscreen-and-automatically-rescale-content
+        //setExtendedState(JFrame.MAXIMIZED_BOTH);
+        //setUndecorated(true);
+
         setVisible(true);
     }
 

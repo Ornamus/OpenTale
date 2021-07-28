@@ -19,7 +19,7 @@ public class StarBlazing extends Attack {
         super(255, 140);
         this.simple = simple;
         if (simple) {
-            setTimeLength(9);
+            setTimeLength(7);
         } else {
             setTimeLength(12);
         }
@@ -35,7 +35,7 @@ public class StarBlazing extends Attack {
                 doDelayed(1, () -> {
                     spawnStar(100, -20, 40);
                     doDelayed(2, () -> {
-                        Projectile p = new ProjectileStar(100, -30, 35, "attacks/star_meh_big") {
+                        Projectile p = new ProjectileStar(-30, 250, 90, "attacks/star_meh_big") {
                             @Override
                             public void draw(Graphics2D g) {
                                 super.draw(g);
@@ -45,6 +45,7 @@ public class StarBlazing extends Attack {
                         };
                         p.setHitboxNiceness(10);
                         p.setMoveSpeed(3);
+                        //p.moveAtAngle(90);
                         AudioHandler.playEffect("star_rain");
                         AudioHandler.playEffect("falling");
                         AudioHandler.playEffect("blades_summon");
@@ -79,7 +80,7 @@ public class StarBlazing extends Attack {
                     setShouldDelete(true);
                     AudioHandler.playEffect("explosion");
                     //List<Projectile> shards = new ArrayList();
-                    for (int i=0; i<8; i++) {
+                    for (int i=0; i<6; i++) {
                         double x = getX() + (getWidth() / 2);
                         double y = getY() + (getHeight() / 2);
                         SpriteSheet sheet = new SpriteSheet(7, 8, 3, 1, "attacks/star_shard");
@@ -111,7 +112,7 @@ public class StarBlazing extends Attack {
         Projectile shard = new Projectile(x, y, a) {
             private double xMomentum = Utils.randomNumber(0, 300) / 100.0;
             private double xDir = Utils.randomNumber(0, 1) == 0 ? -1 : 1;
-            private double yMomentum = Utils.randomNumber(-150, 100) / 100.0;
+            private double yMomentum = Utils.randomNumber(-250, 100) / 100.0;
             private int ticksPerChange = 0;
             @Override
             public void tick() {

@@ -234,6 +234,9 @@ public class Arena implements InputTaker, Drawable {
                     } else if (keyCode == KeyEvent.VK_Z) {
                         if (subMenu == -1) {
                             subMenu = selected;
+                            if (selected == 2 && PlayerInfo.items.isEmpty()) { //if selecting items and you have no items
+                                subMenu = -1;
+                            }
                             AudioHandler.playEffect("menu_select");
                         }
                     }
@@ -575,12 +578,12 @@ public class Arena implements InputTaker, Drawable {
     private boolean doingDeathAnimation = false;
 
     private Long deathAnimStart = null;
-    private int deathX, deathY;
+    private double deathX, deathY;
     private int animStep = 0;
     private BufferedImage soulSplit, gameOver;
     private SpriteSheet soulShardSheet;
 
-    public static void startDeathAnimation(int dX, int dY) {
+    public static void startDeathAnimation(double dX, double dY) {
         DialogBox newD = new DialogBox((Main.WIDTH / 2) - 135, 270);
         newD.setVisuals(Color.WHITE, Main.SANS);
         newD.setRenderBackground(false);
@@ -674,13 +677,13 @@ public class Arena implements InputTaker, Drawable {
                 animStep = 3;
             }
         } else if (time > 500) {
-            g.drawImage(soulSplit, deathX - 2, deathY, null);
+            g.drawImage(soulSplit, Utils.round(deathX) - 2, Utils.round(deathY), null);
             if (animStep == 1) {
                 AudioHandler.playEffect("soul_split");
                 animStep = 2;
             }
         } else {
-            g.drawImage(SoulType.NORMAL.getImage(), deathX, deathY, null);
+            g.drawImage(SoulType.NORMAL.getImage(), Utils.round(deathX), Utils.round(deathY), null);
             animStep = 1;
         }
     }
