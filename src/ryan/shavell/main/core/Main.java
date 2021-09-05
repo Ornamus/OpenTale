@@ -13,7 +13,7 @@ public class Main extends JFrame {
 
     public static Font MENU, DIALOGUE, SQUISH_MENU, BATTLE_DIALOG, BATTLE_NUMBERS, SANS, PAPYRUS;
 
-    public static final int WIDTH = 640, HEIGHT = 480;
+    public static final int WIDTH = 640, HEIGHT = 500;
 
     public Main() {
         try {
